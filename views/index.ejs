@@ -29,10 +29,8 @@
                         <td>UserID</td>
                     </tr>    
                 </thead>
-                <tbody>
-                    <tr>
-                        
-                    </tr>
+                <tbody id="scheduleTable">
+                
                 </tbody>
             </table>
             
@@ -50,6 +48,8 @@
 <script>
 $(document).ready(function(){
     $("#refreshBtn").on("click", function(){
+        var tableData;
+        
         $.ajax({
             url: '/getSchedule',
             type: 'GET',
@@ -57,7 +57,20 @@ $(document).ready(function(){
             dataType: 'json',
             processData: false,
             success: function(data) {
-                console.log(data.toString());
+                for(var i = 0; i < data.length; i++){
+                    console.log(data[i].courseCode);
+                    console.log(data[i].groupNumber);
+                    tableData += "<tr>";
+                    tableData += "<td>"+ data[i].courseCode +"</td>";
+                    tableData += "<td>"+ data[i].groupNumber +"</td>";
+                    tableData += "<td>"+ data[i].teacherId +"</td>";
+                    tableData += "<td>"+ data[i].userID +"</td>";
+                    tableData += "</tr>";
+                }
+                
+                $("#scheduleTable").html(tableData);
+                
+                
             },
             error: function(xhr, exception) {
                 console.log("Error " + xhr.status + ": " + exception.toString());

@@ -31,7 +31,7 @@ app.get("/", function (req, res) {
     res.render("index");
 });
 
-router.get("/getSchedule", function(req, res){
+app.get("/getSchedule", function(req, res){
     db.collection('scheduleDB').get()
     .then((snapshot) => {
         var schedules = [];
@@ -48,7 +48,7 @@ router.get("/getSchedule", function(req, res){
             schedules.push(scheduleSnapshot);
         });
         
-        return res.render("index", { schedules: schedules });
+        return res.send(JSON.stringify(schedules));
     })
     .catch((err) => {
         console.log('Error getting documents', err);
