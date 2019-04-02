@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "teacherattendancesystem-d4185",
+  "private_key_id": "7cb6196c3ec87facba8c936fc41208368b0982e7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDOZuEQNlCLXAzo\nejgB09h9Cx+DXiP3VJH+FrKpnOA0SsxiMGy3idTZdaYDe3XZTd9jzrZE0a+P+kRT\nyqHyvB7POJS86gBKJj992E7HPieYNx3P8+Dsx0gjshYPWY60C2zfwnIFsGucCxYT\nD8H/AsUv9TlMgwzeDNIDWSMaxpckc4dZMvKvCFmqgOg9jO0IbYOEkMfs4h+WT0L4\npJVBNpPABQI/zWiIh9tAeO+Y8f0cARZIsjP9c7M6wk63xBaSKRu7yrbupFWWb+BQ\nWweO+JbSsOlFeIU32oEZ44gskO2r+k7xW4aPTWFcBEekSnz9paWG7Oq/16TXi51m\ni2mMAPaZAgMBAAECggEAUfSCwEO41qUd0P+alosuJnSQtkJeqJoRgCE2HugWFF1w\n6zoMKRKXDCPNYAuZP0hO/9v3/rp96f73O4g1puLwntp6IMsPg2HNiyQlH7L72NJl\nyYkuUgZNDDNt0/l9EtuIhw635K9pAyRZxwbWQnIwpvrJnipZJSBVEZRGvp6FLCjm\n0ef4GyDAcovRsGbTPTDSqXO539J/8CUKB6l/M+jswyXB4A1nI84zWr4JcrnkpxEd\n1AkowFKQTcjPiWamkEgWMsBSdGmpnzmldnWD5vqwZd2p/yq98ZE5/bHofW1Wcvac\nfG0KLFKCu2SgvELazZdtl/McwBvtb8hxB26BlK0LCwKBgQDoYFreUUoHYJRHLvOr\ngAMPmEM6DALf/fBan4WfVkDGepDd0kSKeijm3Qh7cT6z9aD1MweYWEIqFzVFLuKr\nIufSsZS/407q+ofxPpZwWbQlA7fuYxP+p8qvgx95i/ycYdm2+kSkOYAdQh9XkgFM\nkuMznYVlRDIXIpTqJEhakpMyswKBgQDjYogrFJFLN62EsqaojC2ZP9DW1/1q+5Gd\nL8NjZZwUs6KTY3QHhlAgs+C4EQ+BRidCRToErpSW89FMJzIjSnm74FJp16F7EYgy\nb8CGLyC15jBVNdaOvBptk0jI5lHxtsOHsD5NdWYE+pegnmrSya5AWxdO6VMl6azJ\ndrD5bZhngwKBgQDSBxTaT5qbZF1goT03yvH5TGOmuWh3z2tIXVpGk4zkV69L7lpo\n1tTVJP4fpFFKEj4yoLbCqTLUHDnXl/LjPx9MvZh2fxq7I0lvcGREk69QrTW3TvGp\nfzqgu+Dc2Puu1HoU+crEq/vxdewiGCL4dOLJqhwBVUv4wRbbMYP76PMGJQKBgBh9\n3XLedUPnzF3VrFPNPYAbOpBZlWc3j5ihs2b6Y9RrAODlPnMtCWZsWZEZ7VScTNA7\niqNEdqbHvkx4kFLyy6fr4pSZ8D/ERKpCFTeezeQp1hznfqPDKQmSaq2Q+VSSvf7Y\nge1v7rwsjbZ0OcdYh9dQuHL8eMNFpyHQEgHbxyWnAoGBALC6g4Z3BJ5cxsQNQbMh\no2JbW58Jog59fc2egWEg6Kl12QSJdHwtJn82TAT1TsXOSGBCdmRhvY2Y26207T/G\nkVzzwy7iuCFJV4sU2KtTp7nSHu+r/6F2fZpKrW2//IOL7/KBWNJUUM8jnLYPg2HS\nwggXRehqMUTTCFTw76LItUGQ\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-zavz9@teacherattendancesystem-d4185.iam.gserviceaccount.com",
+  "client_id": "113472964768358533903",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-zavz9%40teacherattendancesystem-d4185.iam.gserviceaccount.com"
+}

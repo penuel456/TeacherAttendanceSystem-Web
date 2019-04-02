@@ -1,0 +1,70 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ./partials/head %>
+</head>
+
+<body class="container">
+
+    <header>
+        <% include ./partials/header %>
+    </header>
+
+    <main>
+        <div class="jumbotron">
+            <h1>This is great</h1>
+            <p>Welcome to templating using EJS</p>
+        </div>
+        
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>Course Code</td>
+                        <td>Group Number</td>
+                        <td>TeacherID</td>
+                        <td>UserID</td>
+                    </tr>    
+                </thead>
+                <tbody>
+                    <tr>
+                        
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button class="btn btn-info" id="refreshBtn"><span>Refresh</span></button>
+        </div>
+    </main>
+
+    <footer>
+        <% include ./partials/footer %>
+    </footer>
+
+</body>
+
+</html>
+<script>
+$(document).ready(function(){
+    $("#refreshBtn").on("click", function(){
+        $.ajax({
+            url: '/getSchedule',
+            type: 'GET',
+            contentType: 'application/json; charset-utf-8',
+            dataType: 'json',
+            processData: false,
+            success: function(data) {
+                console.log(data.toString());
+            },
+            error: function(xhr, exception) {
+                console.log("Error " + xhr.status + ": " + exception.toString());
+            }
+        
+        })
+    });
+    
+});
+</script>
