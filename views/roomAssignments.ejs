@@ -18,7 +18,7 @@
                 <form method="post" style="padding-left: 2em;" action="network.php" id="searchForm">
                     <div class='form-row'>
                         <div class="col">
-                            <input type="text" class="form-control" placeholder='ID Number' name='search-value'>
+                            <input type="text" class="form-control" id="distributorIDNo" placeholder='ID Number' name='searchDistributor'>
                         </div>
                         <div class="col">
                             <div class="custom-control custom-checkbox custom-control-inline">
@@ -31,18 +31,19 @@
                             </div>
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                <label class="custom-control-label" for="customCheck3">Teacher</label>
+                                <label class="custom-control-label" for="customCheck3">Day</label>
                             </div>
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="customCheck4">
-                                <label class="custom-control-label" for="customCheck4">User Enrolled</label>
+                                <label class="custom-control-label" for="customCheck4">Room</label>
                             </div>
                         </div>
                         <div class='col-md-2'>
                             <button type="button" style="width: 55%" id="searchBtn" class="btn btn-primary">Search</button>
                             <button type="button" id="refreshBtn" class="btn btn-info">
-                                <span id="refresh-spinner"></span>
-                                <span id="refresh-label">Refresh</span>
+                                <span id="refresh-spinner">
+                                    <span id="refresh-label">Refresh</span>
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -55,10 +56,8 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Course Code</th>
-                            <th>Group Number</th>
-                            <th>Teacher</th>
-                            <!-- <th>User Enrolled</th> -->
+                            <th>Group Number | Course Code</th>
+                            <th>Day | Room | Time</th>
                         </tr>
                     </thead>
                     <tbody id="scheduleTable">
@@ -83,7 +82,7 @@
             var tableData;
 
             $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
-            //$("#refresh-label").html(" ");
+            $("#refresh-label").html(" ");
             // spinner-border-sm
 
             $.ajax({
@@ -100,12 +99,12 @@
                         tableData += "<td>" + data[i].courseCode + "</td>";
                         tableData += "<td>" + data[i].groupNumber + "</td>";
                         tableData += "<td>" + data[i].teacherId + "</td>";
-                        //tableData += "<td>" + data[i].userID + "</td>";
+                        tableData += "<td>" + data[i].userID + "</td>";
                         tableData += "</tr>";
                     }
 
                     $("#refresh-spinner").removeClass();
-                    //$("#refresh-label").html("Refresh");
+                    $("#refresh-label").html("Refresh");
                     $("#scheduleTable").html(tableData);
 
                 },
