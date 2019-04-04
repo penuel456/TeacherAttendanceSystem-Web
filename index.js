@@ -35,12 +35,65 @@ app.get("/roomAssignment", function (req, res) {
     res.render("roomAssignments");
 });
 
+function get12HourTime(time) {
+    var hour = time.getHours();
+    var minutes = time.getMinutes();
+    
+    if(minutes < 10){
+        minutes = "0" + time.getMinutes();
+    }
+    
+    if (hour > 12) {
+        hour -= 12;
+        var timeString = hour + ":" + minutes + " PM";
+    } else {
+        var timeString = hour + ":" + minutes + " AM";
+    }
+    
+    return timeString;
+}
+
+// GETTING ROOM ASSIGNMENTS ON REFRESH BUTTON
+app.get("/getRoomAssignments", function (req, res) {
+    db.collection("roomAssignment").get()
+        .then((snapshot) => {
+            var roomAssignments = [];
+
+            if (snapshot.exists) {
+                console.log("Error: No such schedule document.");
+            } else {
+                snapshot.forEach((doc) => {
+                    var startString = get12HourTime(doc.data().startTime.toDate());
+                    var endString = get12HourTime(doc.data().endTime.toDate());
+
+                    //console.log("Start: ", startString);
+                    //console.log(doc.data().roomID + " End: " + endString);
+
+                    var roomSnapshot = {
+                        roomID: doc.data().roomID,
+                        courseCode: doc.data().courseCode,
+                        groupNumber: doc.data().groupNumber,
+                        roomNumber: doc.data().roomNumber,
+                        startTime: startString,
+                        endTime: endString,
+                        dayAssigned: doc.data().dayAssigned
+                    }
+                });
+                
+                return res.send(JSON.stringify(roomAssignments));
+            }
+        })
+        .catch((err) => {
+            console.log("Error: ", err);
+        });
+
+});
+
 // GETTING SCHEDULE ON REFRESH BUTTON
 app.get("/getSchedule", function (req, res) {
     db.collection('scheduleDB').get()
         .then((snapshot) => {
             var schedules = [];
-            var users = [];
 
             if (snapshot.exists) {
                 console.log("Error: No such schedule document.");
@@ -52,7 +105,7 @@ app.get("/getSchedule", function (req, res) {
                         groupNumber: doc.data().groupNumber,
                         teacherId: doc.data().teacherId,
                         userID: doc.data().userID
-                    }
+                    };
 
                     schedules.push(scheduleSnapshot);
                 });
@@ -68,6 +121,7 @@ app.get("/getSchedule", function (req, res) {
                             console.log("UserID: ", doc.data().userID);
                             for (var i = 0; i < schedules.length; i++) {
                                 if (schedules[i] != undefined) {
+                                    // STUDENT'S OWN SCHEDULE IS REMOVED SINCE WE'RE ONLY GETTING THE TEACHER'S SCHEDULES
                                     if (doc.data().type == "student" && schedules[i].userID == doc.data().userID) {
                                         delete schedules[i];
                                     } else if (doc.data().type == "teacher" && schedules[i].userID == doc.data().userID) {
@@ -87,12 +141,6 @@ app.get("/getSchedule", function (req, res) {
                 .catch((err) => {
                     console.log("Error getting documents", err);
                 });
-            /*
-            if(schedules.length > 0){
-                db.collection('userDB').where()
-            }
-            */
-
         })
         .catch((err) => {
             console.log('Error getting documents', err);

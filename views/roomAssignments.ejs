@@ -86,7 +86,7 @@
             // spinner-border-sm
 
             $.ajax({
-                url: '/getSchedule',
+                url: '/getRoomAssignments',
                 type: 'GET',
                 contentType: 'application/json; charset-utf-8',
                 dataType: 'json',
@@ -95,17 +95,20 @@
                     for (var i = 0; i < data.length; i++) {
                         console.log(data[i].courseCode);
                         console.log(data[i].groupNumber);
+                        /*
                         tableData += "<tr>";
                         tableData += "<td>" + data[i].courseCode + "</td>";
                         tableData += "<td>" + data[i].groupNumber + "</td>";
                         tableData += "<td>" + data[i].teacherId + "</td>";
                         tableData += "<td>" + data[i].userID + "</td>";
                         tableData += "</tr>";
+                        */
                     }
-
+                    
                     $("#refresh-spinner").removeClass();
                     $("#refresh-label").html("Refresh");
-                    $("#scheduleTable").html(tableData);
+                    //$("#scheduleTable").html(tableData);
+                    
 
                 },
                 error: function(xhr, exception) {
