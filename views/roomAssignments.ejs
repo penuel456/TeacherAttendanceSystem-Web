@@ -18,31 +18,30 @@
                 <form method="post" style="padding-left: 2em;" action="network.php" id="searchForm">
                     <div class='form-row'>
                         <div class="col">
-                            <input type="text" class="form-control" id="distributorIDNo" placeholder='ID Number' name='searchDistributor'>
+                            <input type="text" class="form-control" id="searchQuery" placeholder='Search here' name='search-value'>
                         </div>
                         <div class="col">
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                <label class="custom-control-label" for="customCheck1">Course Code</label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="roomCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
+                                <label class="custom-control-label" for="roomCheck1">Course Code</label>
                             </div>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                <label class="custom-control-label" for="customCheck2">Group Number</label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="roomCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
+                                <label class="custom-control-label" for="roomCheck2">Group Number</label>
                             </div>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                <label class="custom-control-label" for="customCheck3">Day</label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="roomCheck3" name="radioFilter" class="custom-control-input" value="dayCheck">
+                                <label class="custom-control-label" for="roomCheck3">Day</label>
                             </div>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="customCheck4">
-                                <label class="custom-control-label" for="customCheck4">Room</label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="roomCheck4" name="radioFilter" class="custom-control-input" value="roomCheck">
+                                <label class="custom-control-label" for="roomCheck4">Room</label>
                             </div>
                         </div>
                         <div class='col-md-2'>
-                            <button type="button" style="width: 55%" id="searchBtn" class="btn btn-primary">Search</button>
-                            <button type="button" id="refreshBtn" class="btn btn-info">
+                            <button type="button" style="width: 85%" id="refreshBtn" class="btn btn-info">
                                 <span id="refresh-spinner">
-                                    <span id="refresh-label">Refresh</span>
+                                    <span id="refresh-label">Search/Refresh</span>
                                 </span>
                             </button>
                         </div>
@@ -56,11 +55,12 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Group Number | Course Code</th>
+                            <th style='width: 10%'>Group Number</th>
+                            <th>Course Code</th>
                             <th>Day | Room | Time</th>
                         </tr>
                     </thead>
-                    <tbody id="scheduleTable">
+                    <tbody id="roomAssignmentTable">
 
                     </tbody>
                 </table>
@@ -90,29 +90,43 @@
                 type: 'GET',
                 contentType: 'application/json; charset-utf-8',
                 dataType: 'json',
-                processData: false,
                 success: function(data) {
-                    for (var i = 0; i < data.length; i++) {
-                        console.log(data[i].courseCode);
-                        console.log(data[i].groupNumber);
-                        /*
-                        tableData += "<tr>";
-                        tableData += "<td>" + data[i].courseCode + "</td>";
-                        tableData += "<td>" + data[i].groupNumber + "</td>";
-                        tableData += "<td>" + data[i].teacherId + "</td>";
-                        tableData += "<td>" + data[i].userID + "</td>";
-                        tableData += "</tr>";
-                        */
-                    }
-                    
-                    $("#refresh-spinner").removeClass();
-                    $("#refresh-label").html("Refresh");
-                    //$("#scheduleTable").html(tableData);
-                    
+                    if (data.length != 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            tableData += "<tr>";
+                            tableData += "<td style='width: 10%'> Group #" + data[i].groupNumber + "</td>";
+                            tableData += "<td>" + data[i].courseCode + "</td>";
+                            tableData += "<td><strong>" + data[i].dayAssigned + "</strong> | " + data[i].roomNumber + " | ";
+                            tableData += data[i].startTime + " - " + data[i].endTime + "</td>";
+                            tableData += "</tr>";
 
+                            $("#refreshBtn").removeClass().addClass("btn-success").addClass("btn");
+                            $("#refresh-label").html(data.length + " result(s) found");
+                            $("#roomAssignmentTable").html(tableData);
+                        }
+                    } else {
+                        $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
+                        $("#refresh-label").html("No results found");
+                    }
+
+                    $("#refresh-spinner").removeClass();
+
+                    setTimeout(function() {
+                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
+                        $("#refresh-label").html("Search/Refresh");
+                    }, 3000);
                 },
                 error: function(xhr, exception) {
                     console.log("Error " + xhr.status + ": " + exception.toString());
+                    $("#refresh-spinner").removeClass();
+
+                    $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
+                    $("#refresh-label").html("Search ERROR");
+
+                    setTimeout(function() {
+                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
+                        $("#refresh-label").html("Search/Refresh");
+                    }, 3000);
                 }
             })
         });

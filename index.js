@@ -18,7 +18,7 @@ var db = admin.firestore();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(express.json());
+//app.use(express.json());
 app.use(express.urlencoded({
     extended: false
 }));
@@ -38,24 +38,48 @@ app.get("/roomAssignment", function (req, res) {
 function get12HourTime(time) {
     var hour = time.getHours();
     var minutes = time.getMinutes();
-    
-    if(minutes < 10){
+
+    if (minutes < 10) {
         minutes = "0" + time.getMinutes();
     }
-    
-    if (hour > 12) {
-        hour -= 12;
+
+    if (hour >= 12) {
+        if (hour != 12) {
+            hour -= 12;
+        }
         var timeString = hour + ":" + minutes + " PM";
     } else {
         var timeString = hour + ":" + minutes + " AM";
     }
-    
+
     return timeString;
+}
+
+function filterScheduleSearch(checkData) {
+    if (checkData.searchQuery.length != 0) {
+        if (checkData.filter == "courseCodeCheck") {
+            console.log("CourseCode is true");
+            return db.collection("scheduleDB")
+                .orderBy("courseCode")
+                .startAt(checkData.searchQuery)
+                .endAt(checkData.searchQuery + "\uf8ff")
+        } else if (checkData.filter == "groupNumberCheck") {
+            console.log("GroupNumber is true");
+            return db.collection("scheduleDB")
+                .where("groupNumber", "==", parseInt(checkData.searchQuery))
+        }
+    } else {
+        return db.collection("scheduleDB")
+            .orderBy("courseCode")
+    }
+
 }
 
 // GETTING ROOM ASSIGNMENTS ON REFRESH BUTTON
 app.get("/getRoomAssignments", function (req, res) {
-    db.collection("roomAssignment").get()
+    db.collection("roomAssignment")
+        .orderBy("courseCode")
+        .get()
         .then((snapshot) => {
             var roomAssignments = [];
 
@@ -78,8 +102,10 @@ app.get("/getRoomAssignments", function (req, res) {
                         endTime: endString,
                         dayAssigned: doc.data().dayAssigned
                     }
+
+                    roomAssignments.push(roomSnapshot);
                 });
-                
+
                 return res.send(JSON.stringify(roomAssignments));
             }
         })
@@ -91,7 +117,11 @@ app.get("/getRoomAssignments", function (req, res) {
 
 // GETTING SCHEDULE ON REFRESH BUTTON
 app.get("/getSchedule", function (req, res) {
-    db.collection('scheduleDB').get()
+    var checkData = req.query;
+    console.log(checkData);
+
+    var query = filterScheduleSearch(checkData);
+    query.get()
         .then((snapshot) => {
             var schedules = [];
 
@@ -117,8 +147,6 @@ app.get("/getSchedule", function (req, res) {
                         console.log("Error: No such user document.")
                     } else {
                         snapshot.forEach((doc) => {
-                            console.log("Type: ", doc.data().type);
-                            console.log("UserID: ", doc.data().userID);
                             for (var i = 0; i < schedules.length; i++) {
                                 if (schedules[i] != undefined) {
                                     // STUDENT'S OWN SCHEDULE IS REMOVED SINCE WE'RE ONLY GETTING THE TEACHER'S SCHEDULES
@@ -133,7 +161,6 @@ app.get("/getSchedule", function (req, res) {
                             }
                         });
                     }
-
                     var result = arrayRemove(schedules, undefined);
 
                     return res.send(JSON.stringify(result));
@@ -148,9 +175,7 @@ app.get("/getSchedule", function (req, res) {
 });
 
 function arrayRemove(arr, value) {
-
     return arr.filter(function (ele) {
         return ele != value;
     });
-
 }

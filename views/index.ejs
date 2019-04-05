@@ -15,30 +15,26 @@
     <main>
         <div class='row'>
             <div class='col-md-12'>
-                <form method="post" style="padding-left: 2em;" action="network.php" id="searchForm">
+                <form method="post" style="padding-left: 2em;" id="searchForm">
                     <div class='form-row'>
-                        <div class="col">
-                            <input type="text" class="form-control" placeholder='ID Number' name='search-value'>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder='Search here' id='searchQuery' name='search-value'>
                         </div>
-                        <div class="col">
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                <label class="custom-control-label" for="customCheck1">Course Code</label>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="schedCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
+                                <label class="custom-control-label" for="schedCheck1">Course Code</label>
                             </div>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                <label class="custom-control-label" for="customCheck2">Group Number</label>
-                            </div>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                <label class="custom-control-label" for="customCheck3">Teacher</label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="schedCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
+                                <label class="custom-control-label" for="schedCheck2">Group Number</label>
                             </div>
                         </div>
                         <div class='col-md-2'>
-                            <button type="button" style="width: 55%" id="searchBtn" class="btn btn-primary">Search</button>
-                            <button type="button" id="refreshBtn" class="btn btn-info">
-                                <span id="refresh-spinner"></span>
-                                <span id="refresh-label">Refresh</span>
+                            <button type="button" style="width: 85%" id="refreshBtn" class="btn btn-info">
+                                <span id="refresh-spinner">
+                                    <span id="refresh-label">Search/Refresh</span>
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -51,8 +47,8 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Course Code</th>
-                            <th>Group Number</th>
+                            <th style='width: 15%'>Group Number</th>
+                            <th style='width: 15%'>Course Code</th>
                             <th>Teacher</th>
                             <!-- <th>User Enrolled</th> -->
                         </tr>
@@ -77,9 +73,12 @@
     $(document).ready(function() {
         $("#refreshBtn").on("click", function() {
             var tableData;
+            var checkData = {};
+            checkData.filter = $('input[name="radioFilter"]:checked').val();
+            checkData.searchQuery = $("#searchQuery").val();
 
             $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
-            //$("#refresh-label").html(" ");
+            $("#refresh-label").html(" ");
             // spinner-border-sm
 
             $.ajax({
@@ -87,26 +86,47 @@
                 type: 'GET',
                 contentType: 'application/json; charset-utf-8',
                 dataType: 'json',
-                processData: false,
+                data: checkData,
                 success: function(data) {
-                    for (var i = 0; i < data.length; i++) {
-                        console.log(data[i].courseCode);
-                        console.log(data[i].groupNumber);
-                        tableData += "<tr>";
-                        tableData += "<td>" + data[i].courseCode + "</td>";
-                        tableData += "<td>" + data[i].groupNumber + "</td>";
-                        tableData += "<td>" + data[i].teacherId + "</td>";
-                        //tableData += "<td>" + data[i].userID + "</td>";
-                        tableData += "</tr>";
+                    if (data.length != 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            tableData += "<tr>";
+                            tableData += "<td style='width: 15%'>Group #" + data[i].groupNumber + "</td>";
+                            tableData += "<td style='width: 15%'>" + data[i].courseCode + "</td>";
+                            tableData += "<td style='width: 50%'>" + data[i].teacherId + "</td>";
+                            //tableData += "<td style='width: 20%'>" + data[i].presence + "</td>";
+                            //tableData += "<td>" + data[i].userID + "</td>";
+                            tableData += "</tr>";
+                        }
+                        
+                        $("#refreshBtn").removeClass().addClass("btn-success").addClass("btn");
+                        $("#refresh-label").html(data.length + " result(s) found");
+                        $("#scheduleTable").html(tableData);
+                    }else {
+                        $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
+                        $("#refresh-label").html("No results found");
                     }
 
+
                     $("#refresh-spinner").removeClass();
-                    //$("#refresh-label").html("Refresh");
-                    $("#scheduleTable").html(tableData);
+
+                    setTimeout(function() {
+                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
+                        $("#refresh-label").html("Search/Refresh");
+                    }, 3000);
 
                 },
                 error: function(xhr, exception) {
                     console.log("Error " + xhr.status + ": " + exception.toString());
+                    $("#refresh-spinner").removeClass();
+
+                    $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
+                    $("#refresh-label").html("Search ERROR");
+
+                    setTimeout(function() {
+                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
+                        $("#refresh-label").html("Search/Refresh");
+                    }, 3000);
                 }
             })
         });
