@@ -15,27 +15,19 @@
     <main>
         <div class='row'>
             <div class='col-md-12'>
-                <form method="post" style="padding-left: 2em;" action="network.php" id="searchForm">
+                <form method="post" style="padding-left: 2em;" id="searchForm">
                     <div class='form-row'>
-                        <div class="col">
+                        <div class="col-md-8">
                             <input type="text" class="form-control" id="searchQuery" placeholder='Search here' name='search-value'>
                         </div>
                         <div class="col">
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="roomCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
+                                <input type="radio" id="statusCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
                                 <label class="custom-control-label" for="roomCheck1">Course Code</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="roomCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
-                                <label class="custom-control-label" for="roomCheck2">Group Number</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="roomCheck3" name="radioFilter" class="custom-control-input" value="dayCheck">
-                                <label class="custom-control-label" for="roomCheck3">Day</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="roomCheck4" name="radioFilter" class="custom-control-input" value="roomCheck">
-                                <label class="custom-control-label" for="roomCheck4">Room</label>
+                                <input type="radio" id="statusCheck2" name="radioFilter" class="custom-control-input" value="teacherCheck">
+                                <label class="custom-control-label" for="statusCheck2">Teacher</label>
                             </div>
                         </div>
                         <div class='col-md-2'>
@@ -50,22 +42,56 @@
             </div>
         </div>
         <br>
-        <div class="col">
-            <div class="col">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th style='width: 10%'>Group Number</th>
-                            <th>Course Code</th>
-                            <th>Day | Room | Time</th>
-                        </tr>
-                    </thead>
-                    <tbody id="roomAssignmentTable">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card border-primary mb-3">
+                        <div class="card-header">Schedule Information</div>
+                        <div class="card-body">
+                            <h5 class="card-title">GRP #3, IT 5001</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Teacher: </li>
+                            <li class="list-group-item">Schedule: </li>
+                            <li class="list-group-item">Students: </li>
+                        </ul>
+                    </div>
+                </div>
 
-                    </tbody>
-                </table>
+                <div class="col">
+                    <div class="card border-dark mb-3">
+                        <div class="card-header">Status</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Dark card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="searchModalLabel">Search Result for </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
     </main>
 
@@ -87,9 +113,9 @@
             $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
             $("#refresh-label").html(" ");
             // spinner-border-sm
-
+            
             $.ajax({
-                url: '/getRoomAssignments',
+                url: '/getStatus',
                 type: 'GET',
                 contentType: 'application/json; charset-utf-8',
                 dataType: 'json',
@@ -107,6 +133,8 @@
                             $("#refreshBtn").removeClass().addClass("btn-success").addClass("btn");
                             $("#refresh-label").html(data.length + " result(s) found");
                             $("#roomAssignmentTable").html(tableData);
+                            
+                            $("#searchModal").modal("show");
                         }
                     } else {
                         $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
@@ -133,8 +161,9 @@
                     }, 3000);
                 }
             })
-        });
 
+            
+        });
     });
 
 </script>

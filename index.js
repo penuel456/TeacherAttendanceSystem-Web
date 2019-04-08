@@ -35,6 +35,17 @@ app.get("/roomAssignment", function (req, res) {
     res.render("roomAssignments");
 });
 
+app.get("/status", function (req, res) {
+    res.render("status");
+});
+
+function getDate(date) {
+    var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+
+    return days[date.getDay()] + ", " + months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear();
+}
+
 function get12HourTime(time) {
     var hour = time.getHours();
     var minutes = time.getMinutes();
@@ -53,6 +64,36 @@ function get12HourTime(time) {
     }
 
     return timeString;
+}
+
+function filterRoomSearch(checkData) {
+    if (checkData.searchQuery.length != 0) {
+        switch (checkData.filter) {
+            case "courseCodeCheck":
+                console.log("Room CourseCode is true");
+                return db.collection("roomAssignment")
+                    .orderBy("courseCode")
+                    .startAt(checkData.searchQuery)
+                    .endAt(checkData.searchQuery + "\uf8ff")
+            case "groupNumberCheck":
+                console.log("Room GroupNumber is true");
+                return db.collection("roomAssignment")
+                    .where("groupNumber", "==", parseInt(checkData.searchQuery))
+            case "dayCheck":
+                console.log("Room Day is true");
+                return db.collection("roomAssignment")
+                    .where("dayAssigned", "==", checkData.searchQuery)
+            case "roomCheck":
+                console.log("Room Number is true");
+                return db.collection("roomAssignment")
+                    .orderBy("roomNumber")
+                    .startAt(checkData.searchQuery)
+                    .endAt(checkData.searchQuery + "\uf8ff")
+        }
+    } else {
+        return db.collection("roomAssignment")
+            .orderBy("courseCode")
+    }
 }
 
 function filterScheduleSearch(checkData) {
@@ -75,10 +116,45 @@ function filterScheduleSearch(checkData) {
 
 }
 
+function filterStatusSearch(checkData) {
+    if (checkData.searchQuery.length != 0) {
+        switch (checkData.filter) {
+            case "courseCodeCheck":
+                console.log("Room CourseCode is true");
+                return db.collection("roomAssignment")
+                    .orderBy("courseCode")
+                    .startAt(checkData.searchQuery)
+                    .endAt(checkData.searchQuery + "\uf8ff")
+            case "groupNumberCheck":
+                console.log("Room GroupNumber is true");
+                return db.collection("roomAssignment")
+                    .where("groupNumber", "==", parseInt(checkData.searchQuery))
+            case "dayCheck":
+                console.log("Room Day is true");
+                return db.collection("roomAssignment")
+                    .where("dayAssigned", "==", checkData.searchQuery)
+            case "roomCheck":
+                console.log("Room Number is true");
+                return db.collection("roomAssignment")
+                    .orderBy("roomNumber")
+                    .startAt(checkData.searchQuery)
+                    .endAt(checkData.searchQuery + "\uf8ff")
+        }
+    } else {
+        return db.collection("roomAssignment")
+            .orderBy("courseCode")
+    }
+}
+
 // GETTING ROOM ASSIGNMENTS ON REFRESH BUTTON
 app.get("/getRoomAssignments", function (req, res) {
-    db.collection("roomAssignment")
-        .orderBy("courseCode")
+    var checkData = req.query;
+    console.log(checkData);
+
+    var query = filterRoomSearch(checkData);
+
+    query
+        .limit(50)
         .get()
         .then((snapshot) => {
             var roomAssignments = [];
@@ -121,7 +197,9 @@ app.get("/getSchedule", function (req, res) {
     console.log(checkData);
 
     var query = filterScheduleSearch(checkData);
-    query.get()
+    query
+        .limit(50)
+        .get()
         .then((snapshot) => {
             var schedules = [];
 
