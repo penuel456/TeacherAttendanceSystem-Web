@@ -26,8 +26,8 @@
                                 <label class="custom-control-label" for="roomCheck1">Course Code</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="statusCheck2" name="radioFilter" class="custom-control-input" value="teacherCheck">
-                                <label class="custom-control-label" for="statusCheck2">Teacher</label>
+                                <input type="radio" id="statusCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
+                                <label class="custom-control-label" for="statusCheck2">Group Number</label>
                             </div>
                         </div>
                         <div class='col-md-2'>
@@ -51,9 +51,8 @@
                             <h5 class="card-title">GRP #3, IT 5001</h5>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Teacher: </li>
-                            <li class="list-group-item">Schedule: </li>
-                            <li class="list-group-item">Students: </li>
+                            <li class="list-group-item">Teacher: <span id="cardTeacher"></span></li>
+                            <li class="list-group-item">Schedule: <span id="cardSchedule"></span></li>
                         </ul>
                     </div>
                 </div>
@@ -62,8 +61,20 @@
                     <div class="card border-dark mb-3">
                         <div class="card-header">Status</div>
                         <div class="card-body">
-                            <h5 class="card-title">Dark card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15%;">Room ID</th>
+                                        <th style="width: 10%;">Day</th>
+                                        <th style="width: 20%;">Room</th>
+                                        <th>Time</th>
+                                        <!-- <th>User Enrolled</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody id="scheduleTable">
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -75,17 +86,29 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="searchModalLabel">Search Result for </h5>
+                        <h5 class="modal-title" id="searchModalLabel">Search Results</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        ...
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style='width: 15%'>Group #</th>
+                                    <th style='width: 20%'>Course Code</th>
+                                    <th style='width: 50%'>Teacher</th>
+                                    <th>Action</th>
+                                    <!-- <th>User Enrolled</th> -->
+                                </tr>
+                            </thead>
+                            <tbody id="searchTable">
+
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -104,18 +127,51 @@
 </html>
 <script>
     $(document).ready(function() {
+        let button = {
+            success: function(resultsCtr) {
+                if (resultsCtr != 0) {
+                    $("#refreshBtn").removeClass().addClass("btn-success").addClass("btn");
+                    $("#refresh-label").html(resultsCtr + " result(s) found");
+                } else {
+                    $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
+                    $("#refresh-label").html("No results found");
+                }
+
+                $("#refresh-spinner").removeClass();
+
+                setTimeout(function() {
+                    $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
+                    $("#refresh-label").html("Search/Refresh");
+                }, 3000);
+            },
+            error: function() {
+                $("#refresh-spinner").removeClass();
+
+                $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
+                $("#refresh-label").html("Search ERROR");
+
+                setTimeout(function() {
+                    $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
+                    $("#refresh-label").html("Search/Refresh");
+                }, 3000);
+            },
+            loading: function() {
+                $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
+                $("#refresh-label").html(" ");
+            }
+        }
+
         $("#refreshBtn").on("click", function() {
             var tableData;
             var checkData = {};
             checkData.filter = $('input[name="radioFilter"]:checked').val();
             checkData.searchQuery = $("#searchQuery").val();
 
-            $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
-            $("#refresh-label").html(" ");
+            button.loading();
             // spinner-border-sm
-            
+
             $.ajax({
-                url: '/getStatus',
+                url: '/getSchedule',
                 type: 'GET',
                 contentType: 'application/json; charset-utf-8',
                 dataType: 'json',
@@ -124,46 +180,39 @@
                     if (data.length != 0) {
                         for (var i = 0; i < data.length; i++) {
                             tableData += "<tr>";
-                            tableData += "<td style='width: 10%'> Group #" + data[i].groupNumber + "</td>";
-                            tableData += "<td>" + data[i].courseCode + "</td>";
-                            tableData += "<td><strong>" + data[i].dayAssigned + "</strong> | " + data[i].roomNumber + " | ";
-                            tableData += data[i].startTime + " - " + data[i].endTime + "</td>";
+                            tableData += "<td style='width: 15%'>Group #" + data[i].groupNumber + "</td>";
+                            tableData += "<td style='width: 20%'>" + data[i].courseCode + "</td>";
+                            tableData += "<td style='width: 50%'>" + data[i].teacherId + "</td>";
+                            tableData += "<td><button class='btn btn-primary'>Pick</button></td>";
                             tableData += "</tr>";
 
-                            $("#refreshBtn").removeClass().addClass("btn-success").addClass("btn");
-                            $("#refresh-label").html(data.length + " result(s) found");
-                            $("#roomAssignmentTable").html(tableData);
-                            
+                            $("#searchTable").html(tableData);
                             $("#searchModal").modal("show");
                         }
-                    } else {
-                        $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
-                        $("#refresh-label").html("No results found");
                     }
 
-                    $("#refresh-spinner").removeClass();
-
-                    setTimeout(function() {
-                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
-                        $("#refresh-label").html("Search/Refresh");
-                    }, 3000);
+                    button.success(data.length);
                 },
                 error: function(xhr, exception) {
                     console.log("Error " + xhr.status + ": " + exception.toString());
-                    $("#refresh-spinner").removeClass();
-
-                    $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
-                    $("#refresh-label").html("Search ERROR");
-
-                    setTimeout(function() {
-                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
-                        $("#refresh-label").html("Search/Refresh");
-                    }, 3000);
+                    button.error();
                 }
             })
 
-            
+
         });
+
+        function buttonError() {
+
+        }
+
+        function buttonSuccess(resultsCtr) {
+
+        }
+
+        function buttonLoading() {
+
+        }
     });
 
 </script>

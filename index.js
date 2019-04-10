@@ -73,8 +73,8 @@ function filterRoomSearch(checkData) {
                 console.log("Room CourseCode is true");
                 return db.collection("roomAssignment")
                     .orderBy("courseCode")
-                    .startAt(checkData.searchQuery)
-                    .endAt(checkData.searchQuery + "\uf8ff")
+                    .startAt(checkData.searchQuery.toUpperCase())
+                    .endAt(checkData.searchQuery.toUpperCase() + "\uf8ff")
             case "groupNumberCheck":
                 console.log("Room GroupNumber is true");
                 return db.collection("roomAssignment")
@@ -82,13 +82,13 @@ function filterRoomSearch(checkData) {
             case "dayCheck":
                 console.log("Room Day is true");
                 return db.collection("roomAssignment")
-                    .where("dayAssigned", "==", checkData.searchQuery)
+                    .where("dayAssigned", "==", checkData.searchQuery.toUpperCase())
             case "roomCheck":
                 console.log("Room Number is true");
                 return db.collection("roomAssignment")
                     .orderBy("roomNumber")
-                    .startAt(checkData.searchQuery)
-                    .endAt(checkData.searchQuery + "\uf8ff")
+                    .startAt(checkData.searchQuery.toUpperCase())
+                    .endAt(checkData.searchQuery.toUpperCase() + "\uf8ff")
         }
     } else {
         return db.collection("roomAssignment")
