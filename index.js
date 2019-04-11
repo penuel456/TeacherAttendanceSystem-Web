@@ -23,6 +23,7 @@ app.use(express.urlencoded({
     extended: false
 }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'views/js')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(port, () => console.log(`Listening on port ${port}`))
@@ -145,6 +146,10 @@ function filterStatusSearch(checkData) {
             .orderBy("courseCode")
     }
 }
+
+app.get("/getRoomAssignmentsByRoomID", function(req, res){
+    //db.collection("roomAssignment")
+});
 
 // GETTING ROOM ASSIGNMENTS ON REFRESH BUTTON
 app.get("/getRoomAssignments", function (req, res) {

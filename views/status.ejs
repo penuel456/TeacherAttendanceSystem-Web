@@ -17,7 +17,7 @@
             <div class='col-md-12'>
                 <form method="post" style="padding-left: 2em;" id="searchForm">
                     <div class='form-row'>
-                        <div class="col-md-8">
+                        <div class="col-md-7">
                             <input type="text" class="form-control" id="searchQuery" placeholder='Search here' name='search-value'>
                         </div>
                         <div class="col">
@@ -30,12 +30,13 @@
                                 <label class="custom-control-label" for="statusCheck2">Group Number</label>
                             </div>
                         </div>
-                        <div class='col-md-2'>
-                            <button type="button" style="width: 85%" id="refreshBtn" class="btn btn-info">
+                        <div class='col'>
+                            <button type="button" style="width: 43%" id="refreshBtn" class="btn btn-info">
                                 <span id="refresh-spinner">
                                     <span id="refresh-label">Search/Refresh</span>
                                 </span>
                             </button>
+                            <button type="button" id="redisplayModalBtn" class="btn btn-secondary">Re-display Result</button>
                         </div>
                     </div>
                 </form>
@@ -48,7 +49,7 @@
                     <div class="card border-primary mb-3">
                         <div class="card-header">Schedule Information</div>
                         <div class="card-body">
-                            <h5 class="card-title">GRP #3, IT 5001</h5>
+                            <h5 class="card-title"><span id="cardSchedTitle">GRP #3, IT 5001</span></h5>
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Teacher: <span id="cardTeacher"></span></li>
@@ -127,40 +128,6 @@
 </html>
 <script>
     $(document).ready(function() {
-        let button = {
-            success: function(resultsCtr) {
-                if (resultsCtr != 0) {
-                    $("#refreshBtn").removeClass().addClass("btn-success").addClass("btn");
-                    $("#refresh-label").html(resultsCtr + " result(s) found");
-                } else {
-                    $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
-                    $("#refresh-label").html("No results found");
-                }
-
-                $("#refresh-spinner").removeClass();
-
-                setTimeout(function() {
-                    $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
-                    $("#refresh-label").html("Search/Refresh");
-                }, 3000);
-            },
-            error: function() {
-                $("#refresh-spinner").removeClass();
-
-                $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
-                $("#refresh-label").html("Search ERROR");
-
-                setTimeout(function() {
-                    $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
-                    $("#refresh-label").html("Search/Refresh");
-                }, 3000);
-            },
-            loading: function() {
-                $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
-                $("#refresh-label").html(" ");
-            }
-        }
-
         $("#refreshBtn").on("click", function() {
             var tableData;
             var checkData = {};
@@ -180,10 +147,10 @@
                     if (data.length != 0) {
                         for (var i = 0; i < data.length; i++) {
                             tableData += "<tr>";
-                            tableData += "<td style='width: 15%'>Group #" + data[i].groupNumber + "</td>";
-                            tableData += "<td style='width: 20%'>" + data[i].courseCode + "</td>";
+                            tableData += "<td style='width: 15%'>Group #<span id='searchGroupNumber'>" + data[i].groupNumber + "</span></td>";
+                            tableData += "<td style='width: 20%'><span id='searchCourseCode'>" + data[i].courseCode + "</span></td>";
                             tableData += "<td style='width: 50%'>" + data[i].teacherId + "</td>";
-                            tableData += "<td><button class='btn btn-primary'>Pick</button></td>";
+                            tableData += "<td><button class='btn btn-primary' data-dismiss='modal' aria-label='Close' id='searchResultBtn'>Pick</button></td>";
                             tableData += "</tr>";
 
                             $("#searchTable").html(tableData);
@@ -198,21 +165,16 @@
                     button.error();
                 }
             })
-
-
         });
-
-        function buttonError() {
-
-        }
-
-        function buttonSuccess(resultsCtr) {
-
-        }
-
-        function buttonLoading() {
-
-        }
+        
+        $("#searchModal").on("click", "#searchResultBtn", function(){
+            console.log($(this).find("#searchGroupNumber").val());
+            //button.loading();
+        });
+        
+        $("#redisplayModalBtn").on("click", function(){
+            $("#searchModal").modal("show");
+        });
     });
 
 </script>

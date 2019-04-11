@@ -84,9 +84,7 @@
             checkData.filter = $('input[name="radioFilter"]:checked').val();
             checkData.searchQuery = $("#searchQuery").val();
 
-            $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
-            $("#refresh-label").html(" ");
-            // spinner-border-sm
+            button.loading();
 
             $.ajax({
                 url: '/getRoomAssignments',
@@ -104,33 +102,15 @@
                             tableData += data[i].startTime + " - " + data[i].endTime + "</td>";
                             tableData += "</tr>";
 
-                            $("#refreshBtn").removeClass().addClass("btn-success").addClass("btn");
-                            $("#refresh-label").html(data.length + " result(s) found");
                             $("#roomAssignmentTable").html(tableData);
                         }
-                    } else {
-                        $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
-                        $("#refresh-label").html("No results found");
                     }
 
-                    $("#refresh-spinner").removeClass();
-
-                    setTimeout(function() {
-                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
-                        $("#refresh-label").html("Search/Refresh");
-                    }, 3000);
+                    button.success(data.length);
                 },
                 error: function(xhr, exception) {
                     console.log("Error " + xhr.status + ": " + exception.toString());
-                    $("#refresh-spinner").removeClass();
-
-                    $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
-                    $("#refresh-label").html("Search ERROR");
-
-                    setTimeout(function() {
-                        $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
-                        $("#refresh-label").html("Search/Refresh");
-                    }, 3000);
+                    button.error();
                 }
             })
         });
