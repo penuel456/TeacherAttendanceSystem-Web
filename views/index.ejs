@@ -44,19 +44,24 @@
         <br>
         <div class="col">
             <div class="col">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th style='width: 15%'>Group Number</th>
-                            <th style='width: 15%'>Course Code</th>
-                            <th>Teacher</th>
-                            <!-- <th>User Enrolled</th> -->
-                        </tr>
-                    </thead>
-                    <tbody id="scheduleTable">
+                <div class="card big-scrollable">
 
-                    </tbody>
-                </table>
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th style='width: 15%'>Group Number</th>
+                                <th style='width: 15%'>Course Code</th>
+                                <th>Teacher</th>
+                                <!-- <th>User Enrolled</th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTable">
+
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
         </div>
 
@@ -98,7 +103,7 @@
                         }
                         $("#scheduleTable").html(tableData);
                     }
-                    
+
                     button.success(data.length);
 
                 },

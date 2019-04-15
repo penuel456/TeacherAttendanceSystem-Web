@@ -147,8 +147,44 @@ function filterStatusSearch(checkData) {
     }
 }
 
-app.get("/getRoomAssignmentsByRoomID", function(req, res){
-    //db.collection("roomAssignment")
+app.get("/getRoomAssignmentsOnStatus", function (req, res) {
+    var checkData = req.query;
+    console.log(checkData);
+
+    db.collection("roomAssignment")
+        .where("groupNumber", "==", parseInt(checkData.groupNumber))
+        .where("courseCode", "==", checkData.courseCode)
+        .get()
+        .then((snapshot) => {
+            var roomAssignments = [];
+
+            snapshot.forEach((doc) => {
+                var startString = get12HourTime(doc.data().startTime.toDate());
+                var endString = get12HourTime(doc.data().endTime.toDate());
+
+                console.log("Start: ", startString);
+                console.log(doc.data().roomID + " End: " + endString);
+
+                var roomSnapshot = {
+                    roomID: doc.data().roomID,
+                    courseCode: doc.data().courseCode,
+                    groupNumber: doc.data().groupNumber,
+                    roomNumber: doc.data().roomNumber,
+                    startTime: startString,
+                    endTime: endString,
+                    dayAssigned: doc.data().dayAssigned
+                }
+
+                roomAssignments.push(roomSnapshot);
+            });
+        
+            return res.send(JSON.stringify(roomAssignments));
+        })
+        .catch((err) => {
+            console.log("Error: ", err);
+        })
+
+    return "None";
 });
 
 // GETTING ROOM ASSIGNMENTS ON REFRESH BUTTON

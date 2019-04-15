@@ -17,7 +17,7 @@
             <div class='col-md-12'>
                 <form method="post" style="padding-left: 2em;" id="searchForm">
                     <div class='form-row'>
-                        <div class="col-md-7">
+                        <div class="col-md-6">
                             <input type="text" class="form-control" id="searchQuery" placeholder='Search here' name='search-value'>
                         </div>
                         <div class="col">
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <div class='col'>
-                            <button type="button" style="width: 43%" id="refreshBtn" class="btn btn-info">
+                            <button type="button" style="width: 50%" id="refreshBtn" class="btn btn-info">
                                 <span id="refresh-spinner">
                                     <span id="refresh-label">Search/Refresh</span>
                                 </span>
@@ -46,18 +46,42 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card border-primary mb-3">
+                    <div class="card border-primary mb-3 scrollable">
                         <div class="card-header">Schedule Information</div>
                         <div class="card-body">
                             <h5 class="card-title"><span id="cardSchedTitle">GRP #3, IT 5001</span></h5>
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Teacher: <span id="cardTeacher"></span></li>
-                            <li class="list-group-item">Schedule: <span id="cardSchedule"></span></li>
+                            <li class="list-group-item">Schedules: <span id="cardSchedule"></span></li>
                         </ul>
                     </div>
                 </div>
 
+                <div class="col">
+                    <div class="card border-dark mb-3 scrollable">
+                        <div class="card-header">Status</div>
+                        <div class="card-body">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15%;">Day</th>
+                                        <th style="width: 25%;">Room</th>
+                                        <th>Time</th>
+                                        <th style="width: 15%;">Action</th>
+                                        <!-- <th>User Enrolled</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody id="scheduleTable">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col">
                     <div class="card border-dark mb-3">
                         <div class="card-header">Status</div>
@@ -65,10 +89,10 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 15%;">Room ID</th>
-                                        <th style="width: 10%;">Day</th>
-                                        <th style="width: 20%;">Room</th>
+                                        <th style="width: 15%;">Day</th>
+                                        <th style="width: 25%;">Room</th>
                                         <th>Time</th>
+                                        <th style="width: 15%;">Action</th>
                                         <!-- <th>User Enrolled</th> -->
                                     </tr>
                                 </thead>
@@ -150,11 +174,12 @@
                             tableData += "<td style='width: 15%'>Group #<span id='searchGroupNumber'>" + data[i].groupNumber + "</span></td>";
                             tableData += "<td style='width: 20%'><span id='searchCourseCode'>" + data[i].courseCode + "</span></td>";
                             tableData += "<td style='width: 50%'>" + data[i].teacherId + "</td>";
-                            tableData += "<td><button class='btn btn-primary' data-dismiss='modal' aria-label='Close' id='searchResultBtn'>Pick</button></td>";
+                            tableData += "<td><button class='btn btn-primary' data-dismiss='modal' aria-label='Close' aria-teacher='" + data[i].teacherId + "' aria-groupnumber='" + data[i].groupNumber + "' aria-coursecode='" + data[i].courseCode + "' id='searchResultBtn'>Pick</button></td>";
                             tableData += "</tr>";
 
                             $("#searchTable").html(tableData);
                             $("#searchModal").modal("show");
+
                         }
                     }
 
@@ -166,13 +191,55 @@
                 }
             })
         });
-        
-        $("#searchModal").on("click", "#searchResultBtn", function(){
-            console.log($(this).find("#searchGroupNumber").val());
-            //button.loading();
+
+        $("#searchModal").on("click", "#searchResultBtn", function() {
+            var tableData;
+            var checkData = {};
+
+            var teacher = $(this).attr("aria-teacher");
+            checkData.groupNumber = $(this).attr("aria-groupnumber");
+            checkData.courseCode = $(this).attr("aria-coursecode");
+
+            button.loading();
+
+
+
+
+            $.ajax({
+                url: "/getRoomAssignmentsOnStatus",
+                type: "GET",
+                contentType: 'application/json; charset-utf-8',
+                dataType: 'json',
+                data: checkData,
+                success: function(data) {
+                    if (data.length != 0) {
+                        $(data).each(function(ndx, value) {
+                            tableData += "<tr>";
+                            tableData += "<td>" + value.dayAssigned + "</td>";
+                            tableData += "<td>" + value.roomNumber + "</td>";
+                            tableData += "<td>" + value.startTime + " - " + value.endTime + "</td>";
+                            tableData += "<td><button class='btn btn-primary' aria-roomid='" + value.roomID + "' id='searchStatusBtn'>Pick</button></td>";
+                            tableData += "</tr>";
+                        });
+
+                        $("#cardTeacher").html(teacher);
+                        $("#cardSchedule").html(data.length);
+                        $("#scheduleTable").html(tableData);
+                        $("#cardSchedTitle").html("GRP #" + data[0].groupNumber + ", " + data[0].courseCode);
+                    }
+
+
+
+                    button.success(data.length);
+                },
+                error: function(xhr, exception) {
+                    console.log("Error " + xhr.status + ": " + exception.toString());
+                    button.error();
+                }
+            })
         });
-        
-        $("#redisplayModalBtn").on("click", function(){
+
+        $("#redisplayModalBtn").on("click", function() {
             $("#searchModal").modal("show");
         });
     });
