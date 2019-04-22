@@ -147,6 +147,34 @@ function filterStatusSearch(checkData) {
     }
 }
 
+app.get("/getStatus", function (req, res) {
+    db.collection("status")
+        .where("roomID", "==", parseInt(req.query.roomID))
+        .get()
+        .then((snapshot) => {
+            var status = [];
+
+            snapshot.forEach((doc) => {
+                var date = getDate(doc.data().date.toDate());
+
+                var statusSnapshot = {
+                    date: date,
+                    status: doc.data().status,
+                    remarks: doc.data().remarks,
+                    roomID: doc.data().roomID,
+                    statusID: doc.data().statusID
+                }
+                
+                status.push(statusSnapshot);
+            });
+        
+            return res.send(JSON.stringify(status));
+        })
+        .catch((exception) => {
+            console.log("Error: ", exception);
+        })
+});
+
 app.get("/getRoomAssignmentsOnStatus", function (req, res) {
     var checkData = req.query;
     console.log(checkData);
@@ -177,7 +205,7 @@ app.get("/getRoomAssignmentsOnStatus", function (req, res) {
 
                 roomAssignments.push(roomSnapshot);
             });
-        
+
             return res.send(JSON.stringify(roomAssignments));
         })
         .catch((err) => {

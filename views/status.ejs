@@ -83,20 +83,18 @@
 
             <div class="row">
                 <div class="col">
-                    <div class="card border-dark mb-3">
-                        <div class="card-header">Status</div>
+                    <div class="card border-dark mb-3 big-scrollable">
+                        <div class="card-header">Status for: <span id="statusSchedule"></span></div>
                         <div class="card-body">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 15%;">Day</th>
-                                        <th style="width: 25%;">Room</th>
-                                        <th>Time</th>
-                                        <th style="width: 15%;">Action</th>
-                                        <!-- <th>User Enrolled</th> -->
+                                        <th style="width: 25%;">Date</th>
+                                        <th style="width: 15%;">Status</th>
+                                        <th>Remarks</th>
                                     </tr>
                                 </thead>
-                                <tbody id="scheduleTable">
+                                <tbody id="statusTable">
 
                                 </tbody>
                             </table>
@@ -202,9 +200,6 @@
 
             button.loading();
 
-
-
-
             $.ajax({
                 url: "/getRoomAssignmentsOnStatus",
                 type: "GET",
@@ -214,11 +209,12 @@
                 success: function(data) {
                     if (data.length != 0) {
                         $(data).each(function(ndx, value) {
+                            var time = value.startTime + " - " + value.endTime;
                             tableData += "<tr>";
-                            tableData += "<td>" + value.dayAssigned + "</td>";
+                            tableData += "<td>" + dateManager.fullDay(value.dayAssigned) + "</td>";
                             tableData += "<td>" + value.roomNumber + "</td>";
-                            tableData += "<td>" + value.startTime + " - " + value.endTime + "</td>";
-                            tableData += "<td><button class='btn btn-primary' aria-roomid='" + value.roomID + "' id='searchStatusBtn'>Pick</button></td>";
+                            tableData += "<td>" + time + "</td>";
+                            tableData += "<td><button class='btn btn-primary' aria-roomid='" + value.roomID + "' aria-schedule='"+ dateManager.fullDay(value.dayAssigned) +", "+ value.roomNumber +", "+ time +"' id='searchStatusBtn'>Pick</button></td>";
                             tableData += "</tr>";
                         });
 
@@ -230,6 +226,43 @@
 
 
 
+                    button.success(data.length);
+                },
+                error: function(xhr, exception) {
+                    console.log("Error " + xhr.status + ": " + exception.toString());
+                    button.error();
+                }
+            })
+        });
+        
+        $("#scheduleTable").on("click", "#searchStatusBtn", function() {
+            $("#statusSchedule").html($(this).attr("aria-schedule"));
+            
+            var checkData = {};
+            var tableData;
+
+            checkData.roomID = $(this).attr("aria-roomid");
+            console.log(checkData.roomID);
+            button.loading();
+            
+            $.ajax({
+                url: "/getStatus",
+                type: "GET",
+                contentType: 'application/json; charset-utf-8',
+                dataType: 'json',
+                data: checkData,
+                success: function(data) {
+                    if(data.length != 0){
+                        $(data).each(function(ndx, value) {
+                            tableData += "<tr>";
+                            tableData += "<td>" + value.date + "</td>";
+                            tableData += "<td>" + value.status + "</td>";
+                            tableData += "<td>" + value.remarks + "</td>";
+                            tableData += "</tr>";
+                        });
+                        
+                        $("#statusTable").html(tableData);
+                    }
                     button.success(data.length);
                 },
                 error: function(xhr, exception) {
