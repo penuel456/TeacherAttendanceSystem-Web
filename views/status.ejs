@@ -23,7 +23,7 @@
                         <div class="col">
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="statusCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
-                                <label class="custom-control-label" for="roomCheck1">Course Code</label>
+                                <label class="custom-control-label" for="statusCheck1">Course Code</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="statusCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
@@ -49,7 +49,7 @@
                     <div class="card border-primary mb-3 scrollable">
                         <div class="card-header">Schedule Information</div>
                         <div class="card-body">
-                            <h5 class="card-title"><span id="cardSchedTitle">GRP #3, IT 5001</span></h5>
+                            <h5 class="card-title"><span id="cardSchedTitle">None</span></h5>
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Teacher: <span id="cardTeacher"></span></li>
@@ -84,7 +84,9 @@
             <div class="row">
                 <div class="col">
                     <div class="card border-dark mb-3 big-scrollable">
-                        <div class="card-header">Status for: <span id="statusSchedule"></span></div>
+                        <div class="card-header">Status for: <span id="statusSchedule"></span>
+                            <span style="float:right;"><span id="presentStatus" class="badge badge-pill badge-success">0</span> <span id="absentStatus" class="badge badge-pill badge-danger">0</span></span>
+                        </div>
                         <div class="card-body">
                             <table class="table table-hover">
                                 <thead>
@@ -214,7 +216,7 @@
                             tableData += "<td>" + dateManager.fullDay(value.dayAssigned) + "</td>";
                             tableData += "<td>" + value.roomNumber + "</td>";
                             tableData += "<td>" + time + "</td>";
-                            tableData += "<td><button class='btn btn-primary' aria-roomid='" + value.roomID + "' aria-schedule='"+ dateManager.fullDay(value.dayAssigned) +", "+ value.roomNumber +", "+ time +"' id='searchStatusBtn'>Pick</button></td>";
+                            tableData += "<td><button class='btn btn-primary' aria-roomid='" + value.roomID + "' aria-schedule='" + dateManager.fullDay(value.dayAssigned) + ", " + value.roomNumber + ", " + time + "' id='searchStatusBtn'>Pick</button></td>";
                             tableData += "</tr>";
                         });
 
@@ -234,17 +236,19 @@
                 }
             })
         });
-        
+
         $("#scheduleTable").on("click", "#searchStatusBtn", function() {
             $("#statusSchedule").html($(this).attr("aria-schedule"));
-            
+
             var checkData = {};
             var tableData;
+            var presentCtr = 0;
+            var absentCtr = 0;
 
             checkData.roomID = $(this).attr("aria-roomid");
             console.log(checkData.roomID);
             button.loading();
-            
+
             $.ajax({
                 url: "/getStatus",
                 type: "GET",
@@ -252,16 +256,26 @@
                 dataType: 'json',
                 data: checkData,
                 success: function(data) {
-                    if(data.length != 0){
+                    if (data.length != 0) {
                         $(data).each(function(ndx, value) {
                             tableData += "<tr>";
                             tableData += "<td>" + value.date + "</td>";
                             tableData += "<td>" + value.status + "</td>";
                             tableData += "<td>" + value.remarks + "</td>";
                             tableData += "</tr>";
+
+                            if (value.status == "Present") {
+                                presentCtr++;
+                            } else if (value.status == "Absent") {
+                                absentCtr++;
+                            }
                         });
-                        
+
+
+
                         $("#statusTable").html(tableData);
+                        $("#presentStatus").html(presentCtr);
+                        $("#absentStatus").html(absentCtr);
                     }
                     button.success(data.length);
                 },
