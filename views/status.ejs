@@ -316,10 +316,10 @@
             checkData.year = todayYear;
             checkData.lastYear = todayYear - 1;
             checkData.monthLabel = $("#monthLabel").data("label");
-            if(monthInt != "None"){
+            if (monthInt != "None") {
                 checkData.monthInt = monthInt + 1;
             }
-            
+
 
 
             console.log($("#monthLabel").data("label"));
@@ -335,6 +335,9 @@
                 dataType: 'json',
                 data: checkData,
                 success: function(data) {
+                    presentCtr = 0;
+                    absentCtr = 0;
+
                     if (data.length != 0) {
                         $(data).each(function(ndx, value) {
                             tableData += "<tr>";
@@ -342,6 +345,8 @@
                             tableData += "<td>" + value.status + "</td>";
                             tableData += "<td>" + value.remarks + "</td>";
                             tableData += "</tr>";
+
+
 
                             if (value.status == "Present") {
                                 presentCtr++;
@@ -353,9 +358,11 @@
 
 
                         $("#statusTable").html(tableData);
-                        $("#presentStatus").html(presentCtr);
-                        $("#absentStatus").html(absentCtr);
+
                     }
+
+                    $("#presentStatus").html(presentCtr);
+                    $("#absentStatus").html(absentCtr);
                     button.success(data.length);
                 },
                 error: function(xhr, exception) {
