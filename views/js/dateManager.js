@@ -9,6 +9,17 @@ let dateManager = {
             }
         }
         
-        return "None";
+        return "No Day";
+    },
+    fromFullMonthToInt: function(fullMonth) {
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        for(var i = 0; i < months.length; i++){
+            if(months[i] == fullMonth){
+                return i;
+            }
+        }
+        
+        return "No Month";
     }
 }

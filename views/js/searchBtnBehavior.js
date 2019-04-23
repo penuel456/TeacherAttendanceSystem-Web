@@ -10,7 +10,7 @@ let button = {
 
         $("#refresh-spinner").removeClass();
 
-        setTimeout(function () {
+        var timeout = setTimeout(function () {
             $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
             $("#refresh-label").html("Search/Refresh");
         }, 3000);
@@ -21,7 +21,7 @@ let button = {
         $("#refreshBtn").removeClass("btn-info").addClass("btn-danger");
         $("#refresh-label").html("Search ERROR");
 
-        setTimeout(function () {
+        var timeout = setTimeout(function () {
             $("#refreshBtn").removeClass().addClass("btn-info").addClass("btn");
             $("#refresh-label").html("Search/Refresh");
         }, 3000);
@@ -29,5 +29,14 @@ let button = {
     loading: function () {
         $("#refresh-spinner").addClass("spinner-border").addClass("spinner-border-sm");
         $("#refresh-label").html(" ");
+    },
+    togglePrint: function () {
+        $("#non-printable").toggle(400);
+        //$("#print-only").toggle(400);
+        if($(".toggle-printable-btn").hasClass("btn-outline-light")){
+            $(".toggle-printable-btn").removeClass("btn-outline-light").addClass("btn-light");
+        }else {
+            $(".toggle-printable-btn").removeClass("btn-light").addClass("btn-outline-light");
+        }
     }
 }

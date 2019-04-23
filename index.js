@@ -117,38 +117,27 @@ function filterScheduleSearch(checkData) {
 
 }
 
-function filterStatusSearch(checkData) {
-    if (checkData.searchQuery.length != 0) {
-        switch (checkData.filter) {
-            case "courseCodeCheck":
-                console.log("Room CourseCode is true");
-                return db.collection("roomAssignment")
-                    .orderBy("courseCode")
-                    .startAt(checkData.searchQuery)
-                    .endAt(checkData.searchQuery + "\uf8ff")
-            case "groupNumberCheck":
-                console.log("Room GroupNumber is true");
-                return db.collection("roomAssignment")
-                    .where("groupNumber", "==", parseInt(checkData.searchQuery))
-            case "dayCheck":
-                console.log("Room Day is true");
-                return db.collection("roomAssignment")
-                    .where("dayAssigned", "==", checkData.searchQuery)
-            case "roomCheck":
-                console.log("Room Number is true");
-                return db.collection("roomAssignment")
-                    .orderBy("roomNumber")
-                    .startAt(checkData.searchQuery)
-                    .endAt(checkData.searchQuery + "\uf8ff")
-        }
-    } else {
-        return db.collection("roomAssignment")
-            .orderBy("courseCode")
-    }
+function filterStatusSearch(start, end) {
+    return db.collection("status")
+    .where("date", "<=", start)
+    .where("date", ">=", end)
 }
 
 app.get("/getStatus", function (req, res) {
-    db.collection("status")
+    var checkData = req.query;
+    var start, end;
+
+    if (checkData.monthLabel != "All") {
+        start = new Date(checkData.year + "-" + checkData.monthInt + "-01");
+        end = new Date(checkData.lastYear + "-" + checkData.monthInt + "-01");
+    }else {
+        start = new Date(checkData.year + "-12");
+        end = new Date(checkData.lastYear + "-01");
+    }
+        
+    var query = filterStatusSearch(start, end);
+
+    query
         .where("roomID", "==", parseInt(req.query.roomID))
         .get()
         .then((snapshot) => {
@@ -164,10 +153,10 @@ app.get("/getStatus", function (req, res) {
                     roomID: doc.data().roomID,
                     statusID: doc.data().statusID
                 }
-                
+
                 status.push(statusSnapshot);
             });
-        
+
             return res.send(JSON.stringify(status));
         })
         .catch((exception) => {

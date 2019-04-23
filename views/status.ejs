@@ -13,21 +13,44 @@
     </header>
 
     <main>
-        <div class='row'>
+        <div class='row' id="non-printable">
             <div class='col-md-12'>
                 <form method="post" style="padding-left: 2em;" id="searchForm">
                     <div class='form-row'>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="searchQuery" placeholder='Search here' name='search-value'>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchQuery" aria-label="Text input with dropdown button">
+                                <div class="input-group-append">
+                                    <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span id="monthLabel" data-label="All">All</span></button>
+                                    <div class="dropdown-menu" id="monthPickerDropdown">
+                                        <a class="dropdown-item" id="monthPicker">All</a>
+                                        <a class="dropdown-item" id="monthPicker">January</a>
+                                        <a class="dropdown-item" id="monthPicker">February</a>
+                                        <a class="dropdown-item" id="monthPicker">March</a>
+                                        <a class="dropdown-item" id="monthPicker">April</a>
+                                        <a class="dropdown-item" id="monthPicker">May</a>
+                                        <a class="dropdown-item" id="monthPicker">June</a>
+                                        <a class="dropdown-item" id="monthPicker">July</a>
+                                        <a class="dropdown-item" id="monthPicker">August</a>
+                                        <a class="dropdown-item" id="monthPicker">September</a>
+                                        <a class="dropdown-item" id="monthPicker">October</a>
+                                        <a class="dropdown-item" id="monthPicker">November</a>
+                                        <a class="dropdown-item" id="monthPicker">December</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+
                         <div class="col">
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="statusCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
-                                <label class="custom-control-label" for="statusCheck1">Course Code</label>
+                                <label class="text-white custom-control-label" for="statusCheck1">Course Code</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="statusCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
-                                <label class="custom-control-label" for="statusCheck2">Group Number</label>
+                                <label class="text-white custom-control-label" for="statusCheck2">Group Number</label>
                             </div>
                         </div>
                         <div class='col'>
@@ -60,7 +83,7 @@
 
                 <div class="col">
                     <div class="card border-dark mb-3 scrollable">
-                        <div class="card-header">Status</div>
+                        <div class="card-header">Room Assignments</div>
                         <div class="card-body">
                             <table class="table table-hover">
                                 <thead>
@@ -68,7 +91,7 @@
                                         <th style="width: 15%;">Day</th>
                                         <th style="width: 25%;">Room</th>
                                         <th>Time</th>
-                                        <th style="width: 15%;">Action</th>
+                                        <th style="width: 15%;" id="scheduleTableAction">Action</th>
                                         <!-- <th>User Enrolled</th> -->
                                     </tr>
                                 </thead>
@@ -83,8 +106,8 @@
 
             <div class="row">
                 <div class="col">
-                    <div class="card border-dark mb-3 big-scrollable">
-                        <div class="card-header">Status for: <span id="statusSchedule"></span>
+                    <div class="card border-dark mb-3">
+                        <div class="card-header">Status for <span id="statusSchedule"></span>
                             <span style="float:right;"><span id="presentStatus" class="badge badge-pill badge-success">0</span> <span id="absentStatus" class="badge badge-pill badge-danger">0</span></span>
                         </div>
                         <div class="card-body">
@@ -92,7 +115,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 25%;">Date</th>
-                                        <th style="width: 15%;">Status</th>
+                                        <th style="width: 20%;">Status</th>
                                         <th>Remarks</th>
                                     </tr>
                                 </thead>
@@ -152,6 +175,49 @@
 </html>
 <script>
     $(document).ready(function() {
+        function formatPrintableTable() {
+            $('#scheduleTable tr > *:nth-child(4)').toggle(400);
+
+            if (togglePrintEnum == 0) {
+                $("#presentStatus").html("Present: " + presentCtr);
+                $("#absentStatus").html("Absent: " + absentCtr);
+                $('#scheduleTableAction').html(" ");
+                togglePrintEnum = 1;
+            } else {
+                $("#presentStatus").html(presentCtr);
+                $("#absentStatus").html(absentCtr);
+                $('#scheduleTableAction').html("Action");
+                togglePrintEnum = 0;
+            }
+        }
+
+        $("#printBtn").on("click", function() {
+            if ($(".toggle-printable-btn").hasClass("btn-outline-light")) {
+                setTimeout(function() {
+                    window.print();
+                }, 400);
+
+                button.togglePrint();
+                formatPrintableTable();
+            } else {
+                window.print();
+            }
+        });
+
+        var togglePrintEnum = 0;
+        var presentCtr = 0;
+        var absentCtr = 0;
+
+        $(".toggle-printable-btn").on("click", function() {
+            button.togglePrint();
+            formatPrintableTable();
+        });
+
+        $("#monthPickerDropdown").on("click", "#monthPicker", function() {
+            $("#monthLabel").html($(this).html());
+            $("#monthLabel").data("label", $(this).html());
+        });
+
         $("#refreshBtn").on("click", function() {
             var tableData;
             var checkData = {};
@@ -159,7 +225,6 @@
             checkData.searchQuery = $("#searchQuery").val();
 
             button.loading();
-            // spinner-border-sm
 
             $.ajax({
                 url: '/getSchedule',
@@ -238,16 +303,30 @@
         });
 
         $("#scheduleTable").on("click", "#searchStatusBtn", function() {
-            $("#statusSchedule").html($(this).attr("aria-schedule"));
+            $("#statusSchedule").html("<strong>" + $(this).attr("aria-schedule") + "</strong> on the month of <strong>" + $("#monthLabel").html() + "</strong>");
 
             var checkData = {};
             var tableData;
-            var presentCtr = 0;
-            var absentCtr = 0;
+
+            var date = new Date(Date.now());
+            var todayYear = date.getFullYear();
+            var monthInt = dateManager.fromFullMonthToInt($("#monthLabel").data("label"));
 
             checkData.roomID = $(this).attr("aria-roomid");
-            console.log(checkData.roomID);
+            checkData.year = todayYear;
+            checkData.lastYear = todayYear - 1;
+            checkData.monthLabel = $("#monthLabel").data("label");
+            if(monthInt != "None"){
+                checkData.monthInt = monthInt + 1;
+            }
+            
+
+
+            console.log($("#monthLabel").data("label"));
+            console.log(monthInt);
+            console.log(checkData.monthInt);
             button.loading();
+            $("#statusTable").html(" ");
 
             $.ajax({
                 url: "/getStatus",

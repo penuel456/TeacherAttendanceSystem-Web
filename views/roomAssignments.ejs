@@ -13,7 +13,7 @@
     </header>
 
     <main>
-        <div class='row'>
+        <div class='row' id="non-printable">
             <div class='col-md-12'>
                 <form method="post" style="padding-left: 2em;" action="network.php" id="searchForm">
                     <div class='form-row'>
@@ -23,19 +23,19 @@
                         <div class="col">
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="roomCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
-                                <label class="custom-control-label" for="roomCheck1">Course Code</label>
+                                <label class="text-white custom-control-label" for="roomCheck1">Course Code</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="roomCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
-                                <label class="custom-control-label" for="roomCheck2">Group Number</label>
+                                <label class="text-white custom-control-label" for="roomCheck2">Group Number</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="roomCheck3" name="radioFilter" class="custom-control-input" value="dayCheck">
-                                <label class="custom-control-label" for="roomCheck3">Day</label>
+                                <label class="text-white custom-control-label" for="roomCheck3">Day</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="roomCheck4" name="radioFilter" class="custom-control-input" value="roomCheck">
-                                <label class="custom-control-label" for="roomCheck4">Room</label>
+                                <label class="text-white custom-control-label" for="roomCheck4">Room</label>
                             </div>
                         </div>
                         <div class='col-md-2'>
@@ -81,6 +81,17 @@
 </html>
 <script>
     $(document).ready(function() {
+        $(".toggle-printable-btn").on("click", function() {
+            button.togglePrint();
+        });
+
+        $("#printBtn").on("click", function() {
+            if($(".toggle-printable-btn").hasClass("btn-outline-light")){
+                button.togglePrint();
+            }
+            window.print();
+        });
+
         $("#refreshBtn").on("click", function() {
             var tableData;
             var checkData = {};

@@ -13,7 +13,7 @@
     </header>
 
     <main>
-        <div class='row'>
+        <div class='row' id="non-printable">
             <div class='col-md-12'>
                 <form method="post" style="padding-left: 2em;" id="searchForm">
                     <div class='form-row'>
@@ -23,11 +23,11 @@
                         <div class="col-md-4">
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="schedCheck1" name="radioFilter" class="custom-control-input" value="courseCodeCheck">
-                                <label class="custom-control-label" for="schedCheck1">Course Code</label>
+                                <label class="text-white custom-control-label" for="schedCheck1">Course Code</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="schedCheck2" name="radioFilter" class="custom-control-input" value="groupNumberCheck">
-                                <label class="custom-control-label" for="schedCheck2">Group Number</label>
+                                <label class="text-white custom-control-label" for="schedCheck2">Group Number</label>
                             </div>
                         </div>
                         <div class='col-md-2'>
@@ -76,6 +76,17 @@
 </html>
 <script>
     $(document).ready(function() {
+        $(".toggle-printable-btn").on("click", function() {
+            button.togglePrint();
+        });
+
+        $("#printBtn").on("click", function() {
+            if($(".toggle-printable-btn").hasClass("btn-outline-light")){
+                button.togglePrint();
+            }
+            window.print();
+        });
+
         $("#refreshBtn").on("click", function() {
             var tableData;
             var checkData = {};
