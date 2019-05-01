@@ -44,7 +44,7 @@ function getDate(date) {
     var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
-    return days[date.getDay()] + ", " + months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear();
+    return days[date.getDay()] + ", " + months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
 }
 
 function get12HourTime(time) {
@@ -145,6 +145,7 @@ app.get("/getStatus", function (req, res) {
 
             snapshot.forEach((doc) => {
                 var date = getDate(doc.data().date.toDate());
+                console.log(date);
 
                 var statusSnapshot = {
                     date: date,
@@ -269,6 +270,8 @@ app.get("/getSchedule", function (req, res) {
                         courseID: doc.data().courseID,
                         courseCode: doc.data().courseCode,
                         groupNumber: doc.data().groupNumber,
+                        department: doc.data().department,
+                        courseName: doc.data().courseName,
                         teacherId: doc.data().teacherId,
                         userID: doc.data().userID
                     };
