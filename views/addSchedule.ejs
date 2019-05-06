@@ -1,0 +1,128 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ./partials/head %>
+</head>
+
+<body>
+    <header>
+        <% include ./partials/header %>
+    </header>
+
+    <main>
+        <div class='row' id="non-printable">
+            <form method="post" style="padding-left: 2em;" id="searchForm">
+            <div class='col-md-12'>
+                    <div class='form-row'>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder='Course Code' id='inputCC' name='Course Code'>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" placeholder='Course ID' id='inputCID' name='course ID'>
+                        </div>
+                        
+                    </div>
+                    <br>
+                   
+              </div>
+            <div class='col-md-12'>
+                    <div class='form-row'>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder='Course Name' id='inputCN' name='Course Name'>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder='Department' id='inputDept' name='Department'>
+                        </div>
+                        
+                    </div>
+                    <br>
+                   
+              </div>
+             <div class='col-md-12'>
+                    <div class='form-row'>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" placeholder='Group Number' id='inputGN' name='Group Number'>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" placeholder='Teacher ID' id='inputteachID' name='Teacher ID'>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" placeholder='USER ID' id='inputuserID' name='USER ID'>
+                        </div>
+                        
+                    </div>
+                    <br>
+                   
+              </div>
+                
+                    <div class='col-md-2'>
+                            <button type="button" style="width: 85%" id="enterBtn" class="btn btn-info">
+                                <span id="refresh-spinner">
+                                    <span id="refresh-label">Enter</span>
+                                </span>
+                            </button>
+                        </div>
+                
+            </form>
+        </div>
+        <br>
+
+    </main>
+
+    <footer>
+        <% include ./partials/footer %>
+    </footer>
+
+</body>
+
+</html>
+<script>
+    $(document).ready(function() {
+        $(".toggle-printable-btn").on("click", function() {
+            button.togglePrint();
+        });
+
+        $("#printBtn").on("click", function() {
+            if($(".toggle-printable-btn").hasClass("btn-outline-light")){
+                button.togglePrint();
+            }
+            window.print();
+        });
+
+        $("#enterBtn").on("click", function() {
+            
+            var sendData = {};
+            sendData.courseCode = $("#inputCC").val();
+            sendData.courseID = $("#inputCID").val();
+            sendData.courseName = $("#inputCN").val();
+            sendData.department = $("#inputDept").val();
+            sendData.groupNumber = $("#inputGN").val();
+            sendData.teacherID = $("#inputteachID").val();
+            sendData.userID = $("inputuserID").val();
+            
+            console.log(sendData);
+            
+            $.ajax({
+                url: '/setSchedule',
+                type: 'GET',
+                contentType: 'application/json; charset-utf-8',
+                dataType: 'json',
+                data: sendData,
+                success: function(data) {
+                    console.log("...");
+
+                },
+                error: function(xhr, exception) {
+                    console.log("Error " + xhr.status + ": " + exception.toString());
+                    console.log("yeehaw");
+                    //button.error();
+                }
+            })
+        });
+
+    });
+
+</script>

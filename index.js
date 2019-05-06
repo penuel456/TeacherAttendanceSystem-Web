@@ -22,7 +22,11 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({
     extended: false
 }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(bodyParser.json());
+
 app.use(express.static(path.join(__dirname, 'views/js')));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -38,6 +42,10 @@ app.get("/roomAssignment", function (req, res) {
 
 app.get("/status", function (req, res) {
     res.render("status");
+});
+
+app.get("/addSchedule", function (req, res) {
+    res.render("addSchedule");
 });
 
 function getDate(date) {
@@ -254,7 +262,6 @@ app.get("/getRoomAssignments", function (req, res) {
 app.get("/getSchedule", function (req, res) {
     var checkData = req.query;
     console.log(checkData);
-
     var query = filterScheduleSearch(checkData);
     query
         .limit(50)
@@ -312,6 +319,18 @@ app.get("/getSchedule", function (req, res) {
             console.log('Error getting documents', err);
         });
 });
+
+app.get("/setSchedule", function (req, res) {
+    console.log("Start submitting.");
+    var sendData = req.query;
+    console.log(sendData);
+    
+    db.collection('scheduleDB').doc(sendData.courseID).set(sendData);
+    
+});
+
+
+
 
 function arrayRemove(arr, value) {
     return arr.filter(function (ele) {
