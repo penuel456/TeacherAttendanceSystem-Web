@@ -20,10 +20,6 @@
                         <div class="col-md-4">
                             <input type="text" class="form-control" placeholder='Course Code' id='inputCC' name='Course Code'>
                         </div>
-                        <div class="col-md-2">
-                            <input type="number" class="form-control" placeholder='Course ID' id='inputCID' name='course ID'>
-                        </div>
-                        
                     </div>
                     <br>
                    
@@ -68,6 +64,10 @@
                 
             </form>
         </div>
+        
+        <div>
+            <h2 id="notificationmessage">- -</h2>
+        </div>
         <br>
 
     </main>
@@ -96,14 +96,13 @@
             
             var sendData = {};
             sendData.courseCode = $("#inputCC").val();
-            sendData.courseID = $("#inputCID").val();
+            sendData.courseID = 0;
             sendData.courseName = $("#inputCN").val();
             sendData.department = $("#inputDept").val();
             sendData.groupNumber = $("#inputGN").val();
             sendData.teacherID = $("#inputteachID").val();
             sendData.userID = $("inputuserID").val();
             
-            console.log(sendData);
             
             $.ajax({
                 url: '/setSchedule',
@@ -112,7 +111,8 @@
                 dataType: 'json',
                 data: sendData,
                 success: function(data) {
-                    console.log("...");
+                   $("#notificationmessage").html("Schedule for '" + data.courseCode + "' has been inserted into the database.");
+                    
 
                 },
                 error: function(xhr, exception) {
