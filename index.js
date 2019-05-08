@@ -355,6 +355,18 @@ app.get("/setSchedule", function (req, res) {
     
 });
 
+app.get("/updateSched", function(req, res){
+    var updateData = req.query;
+    
+    db.collection("scheduleDB")
+    .doc(updateData.courseID)
+        .set(updateData);
+    
+    
+    return res.send(updateData);
+});
+
+
 app.get("/setRoomAssignments", function (req, res) {
     console.log("Start submitting room assigments.");
     
@@ -398,6 +410,8 @@ app.get("/setRoomAssignments", function (req, res) {
     })
     
 });
+
+
 
 
 
