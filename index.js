@@ -322,12 +322,35 @@ app.get("/getSchedule", function (req, res) {
 
 app.get("/setSchedule", function (req, res) {
     console.log("Start submitting.");
-    var sendData = req.query;
-    console.log(sendData);
     
-    db.collection('scheduleDB').doc(sendData.courseID).set(sendData);
+    var getLatestSched = db.collection('scheduleDB').orderBy('courseID', 'desc').limit(1);
+    
+    getLatestSched
+    .get()
+   .then(snapshot => {
+        
+    var sendData = req.query;
+        
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }  
+
+    snapshot.forEach(doc => {
+      console.log(doc.id, '=>', doc.data());
+        var parsedcourseid = parseInt(doc.id);
+        sendData.courseID = (parsedcourseid + 1).toString();
+        console.log("CHANGED: " + sendData.courseID);
+        console.log(sendData);
+        db.collection('scheduleDB').doc(sendData.courseID).set(sendData);
+        
+        return res.send(sendData);
+    });
+    })
     
 });
+
+
 
 
 
