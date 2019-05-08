@@ -48,6 +48,11 @@ app.get("/addSchedule", function (req, res) {
     res.render("addSchedule");
 });
 
+app.get("/addRoomAssignments", function (req, res) {
+    res.render("addRoomAssignments");
+});
+
+
 function getDate(date) {
     var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
@@ -349,6 +354,52 @@ app.get("/setSchedule", function (req, res) {
     })
     
 });
+
+app.get("/setRoomAssignments", function (req, res) {
+    console.log("Start submitting room assigments.");
+    
+  
+    
+    var getLatestSched2 = db.collection('roomAssignment').orderBy('roomID', 'desc').limit(1);
+    
+    getLatestSched2
+    .get()
+   .then(snapshot => {
+        
+        var sendRoom = req.query;
+    
+        var d1 = new Date("January 1, 1970 " + sendRoom.startTime + ":00 GMT+08:00");
+        var d2 = new Date("January 1, 1970 " + sendRoom.endTime + ":00 GMT+08:00");
+    
+        console.log("Start: " + d1 + " Timezone: " + d1.getTimezoneOffset());
+        console.log("End: " + d2 + " Timezone: " + d2.getTimezoneOffset());
+    
+        sendRoom.startTime = d1;
+        sendRoom.endTime = d2;
+        
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }  
+
+    snapshot.forEach(doc => {
+      console.log(doc.id, '=>', doc.data());
+        sendRoom.roomID = (doc.data().roomID + 1);
+        console.log("CHANGED: " + sendRoom.roomID);
+        console.log(sendRoom);
+       
+        
+        console.log("START TIME PICKED UP: " + sendRoom.startTime);
+        console.log("END TIME PICKED UP: " + sendRoom.endTime);
+        db.collection('roomAssignment').doc(sendRoom.roomID.toString()).set(sendRoom);
+        
+        return res.send(sendRoom);
+    });
+    })
+    
+});
+
+
 
 
 
