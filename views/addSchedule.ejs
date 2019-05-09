@@ -101,7 +101,7 @@
             sendData.department = $("#inputDept").val();
             sendData.groupNumber = $("#inputGN").val();
             sendData.teacherID = $("#inputteachID").val();
-            sendData.userID = $("#inputuserID").val();
+            sendData.userID = parseInt($("#inputuserID").val());
             
             
             $.ajax({

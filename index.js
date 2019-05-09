@@ -357,10 +357,36 @@ app.get("/setSchedule", function (req, res) {
 
 app.get("/updateSched", function(req, res){
     var updateData = req.query;
+    console.log("USER ID + " + updateData.userID);
+    db.collection('userDB')
+    .where('type', '==', 'teacher')
+    .where('userID', '==', parseInt(updateData.userID))
+    .get()
+    .then((snapshot) => {
+            if (snapshot.exists) {
+                console.log("Error: No such schedule document.");
+            } else {
+                snapshot.forEach((doc) => {
+                    console.log(doc.id);
+                    console.log(updateData);
+                    db.collection('userDB').doc(updateData.userID).update({'name': updateData.teacherID});
+                    
+                });
+            }
+    })
+    .catch((err) => {
+            console.log("Error getting documents", err);
+    });
+    
+    
     
     db.collection("scheduleDB")
     .doc(updateData.courseID)
-        .set(updateData);
+        .update({'courseCode': updateData.courseCode,
+                 'courseName' : updateData.courseName,
+                 'department' : updateData.department,
+                 'groupNumber' : updateData.groupNumber
+                });
     
     
     return res.send(updateData);
@@ -409,6 +435,36 @@ app.get("/setRoomAssignments", function (req, res) {
     });
     })
     
+});
+
+app.get("/updateRoomAssign", function(req, res){
+    var updateRoom = req.query;
+    
+     var d3 = new Date("January 1, 1970 " + updateRoom.startTime + ":00 GMT+08:00");
+     var d4 = new Date("January 1, 1970 " + updateRoom.endTime + ":00 GMT+08:00");
+    
+     console.log("Start: " + d3 + " Timezone: " + d3.getTimezoneOffset());
+    console.log("End: " + d4 + " Timezone: " + d4.getTimezoneOffset());
+    
+    
+        updateRoom.startTime = d3;
+        updateRoom.endTime = d4;
+    
+    console.log("START TIME PICKED UP: " + updateRoom.startTime);
+        console.log("END TIME PICKED UP: " + updateRoom.endTime);
+    
+    db.collection("roomAssignment")
+    .doc(updateRoom.roomID)
+        .update({'courseCode': updateRoom.courseCode,
+                 'dayAssigned' : updateRoom.dayAssigned,
+                 'groupNumber' : updateRoom.groupNumber,
+                 'roomNumber' : updateRoom.roomNumber,
+                 'startTime' : updateRoom.startTime,
+                 'endTime' : updateRoom.endTime
+                });
+    
+    
+    return res.send(updateRoom);
 });
 
 
