@@ -369,7 +369,7 @@ app.get("/updateSched", function(req, res){
                 snapshot.forEach((doc) => {
                     console.log(doc.id);
                     console.log(updateData);
-                    db.collection('userDB').doc(updateData.userID).update({'name': updateData.teacherID});
+                    db.collection('userDB').doc(updateData.userID).update({'name': updateData.teacherId});
                     
                 });
             }
