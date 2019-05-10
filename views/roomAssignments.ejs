@@ -69,6 +69,101 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="editModal2" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="searchModalLabel">Update Schedule</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class='row' id="non-printable">
+                                <form method="post" style="padding-left: 2em;" id="searchForm">
+                                <div class='col-md-12'>
+                                        <div class='form-row'>
+                                             <div class="col-md-2">
+                                                <span style="font-size:13px;">Course Code, Day Assigned:</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder='Course Code' id='inputCC2' name='Course Code'>
+                                            </div>
+                                              <div class="col-md-4">
+                                                <select name="inputDayAssigned" id = "inputDayAssigned">
+                                                    <option value="M">Monday</option>
+                                                    <option value="T">Tuesday</option>
+                                                    <option value="W">Wednesday</option>
+                                                    <option value="TH">Thursday</option>
+                                                    <option value="F">Friday</option>
+                                                    <option value="SAT">Saturday</option>
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="hidden" class="form-control" placeholder='Course Code' id='inputRID' name='Room ID'>
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                  </div>
+                                <div class='col-md-12'>
+                                        <div class='form-row'>
+                                             <div class="col-md-2">
+                                                <span style="font-size:13px;">Room Name, Group Number:</span>
+                                            </div>
+                                             <div class="col-md-6">
+                                                 <input type="text" class="form-control" placeholder='Room #/Room Name' id='inputRN' name='Room Name'>
+                                             </div>
+
+                                             <div class="col-md-4">
+                                                 <input type="number" class="form-control" placeholder='Group #' id='inputGN' name='Group Number '>
+                                             </div>
+
+                                        </div>
+                                        <br>
+
+                                  </div>
+                                 <div class='col-md-12'>
+                                        <div class='form-row'>
+                                            <div class="col-md-2">
+                                                <span style="font-size:13px;">Start Time - End Time: </span>
+                                            </div>
+                                             <div class="col-md-4">
+                                                    <input type="time" class="form-control" placeholder='Start Time' id='inputStartTime' name='Start Time'>
+                                                </div>
+                                                <p style="color: white; font-size: 24px"> to </p>
+                                                <div class="col-md-4">
+                                                    <input type="time" class="form-control" placeholder='End Time' id='inputEndTime' name='End Time'>
+                                                </div>
+                                             </div>
+                                        <br>
+
+                                  </div>
+
+                                        <div class='col-md-2'>
+                                                <button type="button" style="width: 85%" id="updateBtn2" class="btn btn-info">
+                                                    <span id="refresh-spinner">
+                                                        <span id="refresh-label">Update</span>
+                                                    </span>
+                                                </button>
+                                            </div>
+
+                                </form>
+                            </div>
+        
+                    <div>
+                        <h2 id="notificationmessage" style="color:blue;">- -</h2>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -114,9 +209,61 @@
                             tableData += "<td>" + data[i].courseCode + "</td>";
                             tableData += "<td><strong>" + data[i].dayAssigned + "</strong> | " + data[i].roomNumber + " | ";
                             tableData += data[i].startTime + " - " + data[i].endTime + "</td>";
+                            tableData += "<td><button class='btn btn-primary editBtn2' data-dismiss='modal' aria-label='Close' aria-roomID='"+ data[i].roomID +"' aria-dayassigned='" + data[i].dayAssigned + "' aria-groupnumber='" + data[i].groupNumber + "' aria-coursecode='" + data[i].courseCode + "' data-roomnumber='" + data[i].roomNumber + "' data-starttime='" + data[i].startTime + "' + data-endtime='"+data[i].endTime+"'>Edit</button></td>";
                             tableData += "</tr>";
 
                             $("#roomAssignmentTable").html(tableData);
+                            
+                             $(".editBtn2").on("click", function() {
+                                 console.log($(this).attr("aria-roomID"));
+                                 console.log($(this).data("roomnumber"));
+                                 console.log($(this).attr("aria-coursecode"));
+                                 
+                                 
+                                 $("#editModal2").modal("show");
+                               
+                                    $("#inputCC2").val($(this).attr("aria-coursecode"));
+                                    $("#inputRID").val($(this).attr("aria-roomID"));
+                                    $("#inputRN").val($(this).data("roomnumber"));
+                                    $("#inputGN").val($(this).attr("aria-groupnumber"));
+                                    $("#inputDayAssigned").val($(this).attr("aria-dayassigned"));
+                                    $("#inputStartTime").val($.trim(convertTo24Hour($(this).data("starttime"))));
+                                    $("#inputEndTime").val($.trim(convertTo24Hour($(this).data("endtime"))));
+                                 
+                                 console.log($("#inputStartTime").val() + " - " + $("#inputEndTime").val());
+                                  $("#updateBtn2").on("click", function(){
+                                    
+                                        var updateRoom = {};
+                                        updateRoom.courseCode = $("#inputCC2").val();
+                                        updateRoom.roomID =  parseInt($("#inputRID").val());
+                                        updateRoom.roomNumber = $("#inputRN").val();
+                                        updateRoom.groupNumber = parseInt($("#inputGN").val());
+                                        updateRoom.dayAssigned = $("#inputDayAssigned").val();
+                                        updateRoom.startTime = $("#inputStartTime").val();
+                                        updateRoom.endTime = $("#inputEndTime").val();
+                                        console.log(updateRoom);
+                                        
+                                     $.ajax({
+                                        url: '/updateRoomAssign',
+                                        type: 'GET',
+                                        contentType: 'application/json; charset-utf-8',
+                                        dataType: 'json',
+                                        data: updateRoom,
+                                        success: function(data) {
+                                            $("#notificationmessage").html("Course '" + data.courseCode + "', Group No. '" +data.groupNumber + "' in Room '" + data.roomNumber + "' has been updated in the database.");
+
+
+                                        },
+                                        error: function(xhr, exception) {
+                                            console.log("Error " + xhr.status + ": " + exception.toString());
+                                            console.log("yeehaw");
+                                            //button.error();
+                                        }
+                                    })
+                                    
+                                });
+                             });
+                            
                         }
                     }
 
@@ -129,6 +276,22 @@
             })
         });
 
+        function convertTo24Hour(time) {
+            var hours = parseInt(time.substr(0, 2));
+           
+                
+                if(time.indexOf('AM') != -1 && hours == 12) {
+                        time = time.replace('12', '00');
+                }
+                if(time.indexOf('AM') != -1 && hours < 10){
+                    time = time.replace(hours, "0" + hours);
+                }
+                if(time.indexOf('PM')  != -1 && hours < 12) {
+                        time = time.replace(hours, (hours + 12));
+                }
+                    return time.replace(/(AM|PM)/, '');
+        }
+        
     });
 
 </script>

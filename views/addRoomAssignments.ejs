@@ -20,41 +20,55 @@
                         <div class="col-md-4">
                             <input type="text" class="form-control" placeholder='Course Code' id='inputCC' name='Course Code'>
                         </div>
+                          <div class="col-md-4">
+                            <select name="inputDayAssigned" id = "inputDayAssigned">
+                                <option value="M">Monday</option>
+                                <option value="T">Tuesday</option>
+                                <option value="W">Wednesday</option>
+                                <option value="TH">Thursday</option>
+                                <option value="F">Friday</option>
+                                <option value="SAT">Saturday</option>
+                                
+                            </select>
+                        </div>
                     </div>
                     <br>
                    
               </div>
             <div class='col-md-12'>
                     <div class='form-row'>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" placeholder='Course Name' id='inputCN' name='Course Name'>
-                        </div>
+                      
                         <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder='Department' id='inputDept' name='Department'>
+                            <input type="text" class="form-control" placeholder='Room #/Room Name' id='inputRN' name='Room Name'>
                         </div>
                         
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" placeholder='Group #' id='inputGN' name='Group Number '>
+                        </div>
+                        
+                          
                     </div>
                     <br>
                    
               </div>
              <div class='col-md-12'>
                     <div class='form-row'>
-                        <div class="col-md-2">
-                            <input type="number" class="form-control" placeholder='Group Number' id='inputGN' name='Group Number'>
+                        
+                      <div class="col-md-4">
+                            <input type="time" class="form-control" placeholder='Start Time' id='inputStartTime' name='Start Time'>
                         </div>
-                        <div class="col-md-2">
-                            <input type="number" class="form-control" placeholder='Teacher ID' id='inputteachID' name='Teacher ID'>
+                        <p style="color: white; font-size: 24px"> to </p>
+                        <div class="col-md-4">
+                            <input type="time" class="form-control" placeholder='End Time' id='inputEndTime' name='End Time'>
                         </div>
-                        <div class="col-md-2">
-                            <input type="number" class="form-control" placeholder='USER ID' id='inputuserID' name='USER ID'>
-                        </div>
+                        
                         
                     </div>
                     <br>
                    
               </div>
                 
-                    <div class='col-md-2'>
+                    <div class='col-md-4'>
                             <button type="button" style="width: 85%" id="enterBtn" class="btn btn-info">
                                 <span id="refresh-spinner">
                                     <span id="refresh-label">Enter</span>
@@ -83,7 +97,7 @@
     $(document).ready(function() {
         $(".toggle-printable-btn").on("click", function() {
             button.togglePrint();
-        });     
+        });
 
         $("#printBtn").on("click", function() {
             if($(".toggle-printable-btn").hasClass("btn-outline-light")){
@@ -94,26 +108,26 @@
 
         $("#enterBtn").on("click", function() {
             
-            var sendData = {};
-            sendData.courseCode = $("#inputCC").val();
-            sendData.courseID = 0;
-            sendData.courseName = $("#inputCN").val();
-            sendData.department = $("#inputDept").val();
-            sendData.groupNumber = $("#inputGN").val();
-            sendData.teacherID = $("#inputteachID").val();
-            sendData.userID = parseInt($("#inputuserID").val());
+            var sendRoom = {};
             
+            sendRoom.courseCode = $("#inputCC").val();
+            sendRoom.roomID = 0;
+            sendRoom.dayAssigned = $("#inputDayAssigned").val();
+            sendRoom.roomNumber = $("#inputRN").val();
+            sendRoom.groupNumber = $("#inputGN").val();
+            sendRoom.startTime = $("#inputStartTime").val();
+            sendRoom.endTime = $("#inputEndTime").val();
+            console.log(sendRoom);
             
-            $.ajax({
-                url: '/setSchedule',
+              $.ajax({
+                url: '/setRoomAssignments',
                 type: 'GET',
                 contentType: 'application/json; charset-utf-8',
                 dataType: 'json',
-                data: sendData,
+                data: sendRoom,
                 success: function(data) {
-                   $("#notificationmessage").html("Schedule for '" + data.courseCode + "' has been inserted into the database.");
+                   $("#notificationmessage").html("Course '" + data.courseCode + "', Group No. '" +data.groupNumber + "' has been assigned to Room '" + data.roomNumber + "' into the database.");
                     
-
                 },
                 error: function(xhr, exception) {
                     console.log("Error " + xhr.status + ": " + exception.toString());
@@ -122,7 +136,7 @@
                 }
             })
         });
-
+        
     });
 
 </script>
