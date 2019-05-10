@@ -306,6 +306,7 @@ app.get("/getSchedule", function (req, res) {
                                     } else if (doc.data().type == "teacher" && schedules[i].userID == doc.data().userID) {
                                         schedules[i].teacherId = doc.data().name;
                                     } else if (schedules[i].teacherId == null) {
+                                        console.log("NI PASA");
                                         schedules[i].teacherId = "None";
                                     }
                                 }
@@ -335,7 +336,10 @@ app.get("/setSchedule", function (req, res) {
    .then(snapshot => {
         
     var sendData = req.query;
-        
+        sendData.courseID = parseInt(sendData.courseID, 10);
+        sendData.groupNumber = parseInt(sendData.groupNumber, 10);
+        sendData.teacherId = parseInt(sendData.teacherId, 10);
+        sendData.userID = parseInt(sendData.userID, 10);
     if (snapshot.empty) {
       console.log('No matching documents.');
       return;
@@ -344,10 +348,10 @@ app.get("/setSchedule", function (req, res) {
     snapshot.forEach(doc => {
       console.log(doc.id, '=>', doc.data());
         var parsedcourseid = parseInt(doc.id);
-        sendData.courseID = (parsedcourseid + 1).toString();
+        sendData.courseID = parsedcourseid + 1;
         console.log("CHANGED: " + sendData.courseID);
         console.log(sendData);
-        db.collection('scheduleDB').doc(sendData.courseID).set(sendData);
+        db.collection('scheduleDB').doc(sendData.courseID.toString()).set(sendData);
         
         return res.send(sendData);
     });
@@ -357,6 +361,10 @@ app.get("/setSchedule", function (req, res) {
 
 app.get("/updateSched", function(req, res){
     var updateData = req.query;
+     updateData.courseID = parseInt(updateData.courseID, 10);
+     updateData.groupNumber = parseInt(updateData.groupNumber, 10);
+     updateData.teacherId = parseInt(updateData.teacherId, 10);
+     updateData.userID = parseInt(updateData.userID, 10);
     console.log("USER ID + " + updateData.userID);
     db.collection('userDB')
     .where('type', '==', 'teacher')
@@ -369,7 +377,7 @@ app.get("/updateSched", function(req, res){
                 snapshot.forEach((doc) => {
                     console.log(doc.id);
                     console.log(updateData);
-                    db.collection('userDB').doc(updateData.userID).update({'name': updateData.teacherId});
+                    db.collection('userDB').doc(updateData.userID.toString()).update({'name': updateData.teacherId.toString()});
                     
                 });
             }
@@ -381,7 +389,7 @@ app.get("/updateSched", function(req, res){
     
     
     db.collection("scheduleDB")
-    .doc(updateData.courseID)
+    .doc(updateData.courseID.toString())
         .update({'courseCode': updateData.courseCode,
                  'courseName' : updateData.courseName,
                  'department' : updateData.department,
@@ -405,7 +413,8 @@ app.get("/setRoomAssignments", function (req, res) {
    .then(snapshot => {
         
         var sendRoom = req.query;
-    
+        sendRoom.groupNumber = parseInt(sendRoom.groupNumber, 10);
+        
         var d1 = new Date("January 1, 1970 " + sendRoom.startTime + ":00 GMT+08:00");
         var d2 = new Date("January 1, 1970 " + sendRoom.endTime + ":00 GMT+08:00");
     
@@ -439,6 +448,7 @@ app.get("/setRoomAssignments", function (req, res) {
 
 app.get("/updateRoomAssign", function(req, res){
     var updateRoom = req.query;
+    updateRoom.groupNumber = parseInt(updateRoom.groupNumber, 10);
     
      var d3 = new Date("January 1, 1970 " + updateRoom.startTime + ":00 GMT+08:00");
      var d4 = new Date("January 1, 1970 " + updateRoom.endTime + ":00 GMT+08:00");

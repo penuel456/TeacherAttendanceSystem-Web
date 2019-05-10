@@ -114,7 +114,7 @@
             sendRoom.roomID = 0;
             sendRoom.dayAssigned = $("#inputDayAssigned").val();
             sendRoom.roomNumber = $("#inputRN").val();
-            sendRoom.groupNumber = $("#inputGN").val();
+            sendRoom.groupNumber = parseInt($("#inputGN").val());
             sendRoom.startTime = $("#inputStartTime").val();
             sendRoom.endTime = $("#inputEndTime").val();
             console.log(sendRoom);
