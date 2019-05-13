@@ -190,10 +190,12 @@
                 success: function(data) {
                     if (data.length != 0) {
                         for (var i = 0; i < data.length; i++) {
+                            console.log("DATA LENGTH: " + data.length);
                             tableData += "<tr>";
                             tableData += "<td style='width: 15%'>Group #" + data[i].groupNumber + "</td>";
                             tableData += "<td style='width: 15%'>" + data[i].courseCode + "</td>";
                             tableData += "<td style='width: 50%'>" + data[i].teacherId + "</td>";
+                            console.log("record " + i + " : " + data[i].teacherId);
                             //tableData += "<td style='width: 20%'>" + data[i].presence + "</td>";
                             //tableData += "<td>" + data[i].userID + "</td>";
                             tableData += "<td><button class='btn btn-primary editBtn' data-dismiss='modal' aria-label='Close' aria-courseid='"+ data[i].courseID +"' aria-teacher='" + data[i].teacherId + "' aria-groupnumber='" + data[i].groupNumber + "' aria-coursecode='" + data[i].courseCode + "' data-department='" + data[i].department + "' data-name='" + data[i].courseName + "' + aria-userid='"+data[i].userID+"'>Edit</button></td>";
@@ -226,7 +228,7 @@
                                         updateData.courseName = $("#inputCN").val();
                                         updateData.department = $("#inputDept").val();
                                         updateData.groupNumber = parseInt($("#inputGN").val());
-                                        updateData.teacherID = $("#inputteachID").val();
+                                        updateData.teacherId = parseInt($("#inputteachID").val());
                                         updateData.userID = parseInt($("#inputuserID").val());
                                         console.log(updateData);
                                         
