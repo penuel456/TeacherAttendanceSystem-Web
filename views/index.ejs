@@ -50,8 +50,9 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th style='width: 15%'>Group Number</th>
+                                <th style='width: 10%'>Group Number</th>
                                 <th style='width: 15%'>Course Code</th>
+                                <th style='width: 40%'>Department</th>
                                 <th>Teacher</th>
                                 <!-- <th>User Enrolled</th> -->
                             </tr>
@@ -65,92 +66,115 @@
             </div>
         </div>
 
-        
+
         <!-- Modal -->
         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="searchModalLabel">Update Room Assignment</h5>
+                        <h5 class="modal-title" id="searchModalLabel">Edit Schedule</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
+                        <div class="container">
                             <div class='row' id="non-printable">
                                 <form method="post" style="padding-left: 2em;" id="searchForm">
-                                <div class='col-md-12'>
+                                    <div class='col-md-12'>
                                         <div class='form-row'>
-                                            <div class="col-md-2">
-                                                <span style="font-size:13px;">Course Code:</span>
-                                            </div>
                                             <div class="col-md-4">
+                                                <span style="font-size:15px;">Course Code:</span>
+                                            </div>
+                                            <div class="col-md-8">
                                                 <input type="text" class="form-control" placeholder='Course Code' id='inputCC' name='Course Code'>
-                                            </div>
-                                            <div class="col-md-4">
-                                                 <input type="hidden" class="form-control" placeholder='Course ID' id='inputCID' name='Course ID'> 
+                                                <input type="hidden" class="form-control" placeholder='Course ID' id='inputCID' name='Course ID'>
                                             </div>
                                         </div>
-                                        <br>
+                                    </div>
 
-                                  </div>
-                                <div class='col-md-12'>
+                                    <br>
+
+                                    <div class='col-md-12'>
                                         <div class='form-row'>
-                                             <div class="col-md-2">
-                                                <span style="font-size:13px;">Course Name, Department:</span>
+                                            <div class="col-md-4">
+                                                <span style="font-size:15px;">Group Number:</span>
                                             </div>
                                             <div class="col-md-4">
-                                                <input type="text" class="form-control" placeholder='Course Name' id='inputCN' name='Course Name'>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" class="form-control" placeholder='Department' id='inputDept' name='Department'>
-                                            </div>
-
-                                        </div>
-                                        <br>
-
-                                  </div>
-                                 <div class='col-md-12'>
-                                        <div class='form-row'>
-                                            <div class="col-md-2">
-                                                <span style="font-size:13px;">Group Number, Teacher ID, User ID: </span>
-                                            </div>
-                                            <div class="col-md-2">
                                                 <input type="number" class="form-control" placeholder='Group #' id='inputGN' name='Group Number'>
                                             </div>
-                                            <div class="col-md-3">
-                                                <input type="text" class="form-control" placeholder='Teacher ID' id='inputteachID' name='Teacher ID'>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class='col-md-12'>
+                                        <div class='form-row'>
+                                            <div class="col-md-4">
+                                                <span style="font-size:15px;">Course Name:</span>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col">
+                                                <textarea type="text" class="form-control" placeholder='Course Name' id='inputCN' name='Course Name'></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class='col-md-12'>
+                                        <div class='form-row'>
+                                            <div class="col-md-4">
+                                                <span style="font-size:15px;">Department:</span>
+                                            </div>
+
+                                            <div class="col">
+                                                <textarea type="text" class="form-control" placeholder='Department' id='inputDept' name='Department'></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class='col-md-12'>
+                                        <div class='form-row'>
+                                            <div class="col-md-4">
+                                                <span style="font-size:15px;">Teacher ID: </span>
+                                            </div>
+
+                                            <div class="col">
+                                                <input type="text" class="form-control" placeholder='Teacher ID' id='inputteachID' name='Teacher ID'>
                                                 <input type="number" class="form-control" placeholder='USER ID' id='inputuserID' name='USER ID' style="display: none;">
                                             </div>
-                                             </div>
-                                        <br>
+                                        </div>
+                                    </div>
 
-                                  </div>
+                                    <br>
 
-                                        <div class='col-md-2'>
-                                                <button type="button" style="width: 85%" id="updateBtn" class="btn btn-info">
-                                                    <span id="refresh-spinner">
-                                                        <span id="refresh-label">Update</span>
-                                                    </span>
-                                                </button>
-                                            </div>
-
+                                    <div class='col-md-12'>
+                                        <button type="button" style="width: 100%" id="updateBtn" class="btn btn-info">
+                                        <span id="refresh-spinner">
+                                            <span id="refresh-label">Update</span>
+                                        </span>
+                                    </button>
+                                    </div>
                                 </form>
                             </div>
-        
-                    <div>
-                        <h2 id="notificationmessage" style="color:blue;">- -</h2>
+
+                            <div>
+                                <h2 id="notificationmessage"></h2>
+                            </div>
+                        </div>
+
                     </div>
-                    </div>
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </main>
 
     <footer>
@@ -167,7 +191,7 @@
         });
 
         $("#printBtn").on("click", function() {
-            if($(".toggle-printable-btn").hasClass("btn-outline-light")){
+            if ($(".toggle-printable-btn").hasClass("btn-outline-light")) {
                 button.togglePrint();
             }
             window.print();
@@ -192,69 +216,22 @@
                         for (var i = 0; i < data.length; i++) {
                             console.log("DATA LENGTH: " + data.length);
                             tableData += "<tr>";
-                            tableData += "<td style='width: 15%'>Group #" + data[i].groupNumber + "</td>";
+                            tableData += "<td style='width: 10%'>Group #" + data[i].groupNumber + "</td>";
                             tableData += "<td style='width: 15%'>" + data[i].courseCode + "</td>";
-                            tableData += "<td style='width: 50%'>" + data[i].teacherId + "</td>";
+                            tableData += "<td style='width: 40%'>" + data[i].department + "</td>";
+                            tableData += "<td>" + data[i].teacherId + "</td>";
                             console.log("record " + i + " : " + data[i].teacherId);
                             //tableData += "<td style='width: 20%'>" + data[i].presence + "</td>";
                             //tableData += "<td>" + data[i].userID + "</td>";
-                            tableData += "<td><button class='btn btn-primary editBtn' data-dismiss='modal' aria-label='Close' aria-courseid='"+ data[i].courseID +"' aria-teacher='" + data[i].teacherId + "' aria-groupnumber='" + data[i].groupNumber + "' aria-coursecode='" + data[i].courseCode + "' data-department='" + data[i].department + "' data-name='" + data[i].courseName + "' + aria-userid='"+data[i].userID+"'>Edit</button></td>";
+                            tableData += "<td><button class='btn btn-primary editBtn' data-dismiss='modal' aria-label='Close' aria-courseid='" + data[i].courseID + "' aria-teacher='" + data[i].teacherId + "' aria-groupnumber='" + data[i].groupNumber + "' aria-coursecode='" + data[i].courseCode + "' data-department='" + data[i].department + "' data-name='" + data[i].courseName + "' + aria-userid='" + data[i].userID + "'>Edit</button></td>";
                             tableData += "</tr>";
-                            
-                           
+
+
                             $("#scheduleTable").html(tableData);
                             //console.log(i);
-                            $(".editBtn").on("click", function() {
-                                    console.log("YOOOOOOOO");
-                                    console.log($(this).attr("aria-courseID"));
-                                    console.log($(this).attr("aria-teacher"));
-                                    console.log($(this).attr("aria-userid"));
-                                    
-                                $("#editModal").modal("show");
-                                
-                                    $("#inputCC").val($(this).attr("aria-coursecode"));
-                                    $("#inputCID").val($(this).attr("aria-courseid"));
-                                    $("#inputCN").val($(this).data("name"));
-                                    $("#inputDept").val($(this).data("department"));
-                                    $("#inputGN").val($(this).attr("aria-groupnumber"));
-                                    $("#inputteachID").val($(this).attr("aria-teacher"));
-                                    $("#inputuserID").val($(this).attr("aria-userid"));
-                                
-                                $("#updateBtn").on("click", function(){
-                                    
-                                        var updateData = {};
-                                        updateData.courseCode = $("#inputCC").val();
-                                        updateData.courseID =  $("#inputCID").val();
-                                        updateData.courseName = $("#inputCN").val();
-                                        updateData.department = $("#inputDept").val();
-                                        updateData.groupNumber = parseInt($("#inputGN").val());
-                                        updateData.teacherId = parseInt($("#inputteachID").val());
-                                        updateData.userID = parseInt($("#inputuserID").val());
-                                        console.log(updateData);
-                                        
-                                     $.ajax({
-                                        url: '/updateSched',
-                                        type: 'GET',
-                                        contentType: 'application/json; charset-utf-8',
-                                        dataType: 'json',
-                                        data: updateData,
-                                        success: function(data) {
-                                           $("#notificationmessage").html("Schedule for '" + data.courseCode + "' has been updated to the database.");
 
-
-                                        },
-                                        error: function(xhr, exception) {
-                                            console.log("Error " + xhr.status + ": " + exception.toString());
-                                            console.log("yeehaw");
-                                            //button.error();
-                                        }
-                                    })
-                                    
-                                });
-                              
-                            });
                         }
-                        
+
                     }
 
                     button.success(data.length);
@@ -265,6 +242,53 @@
                     button.error();
                 }
             })
+        });
+
+        $("#scheduleTable").on("click", ".editBtn", function() {
+            console.log("Editing schedule: ", $(this).attr("aria-coursecode"));
+            console.log($(this).attr("aria-courseID"));
+            console.log($(this).attr("aria-teacher"));
+            console.log($(this).attr("aria-userid"));
+
+            $("#editModal").modal("show");
+
+            $("#inputCC").val($(this).attr("aria-coursecode"));
+            $("#inputCID").val($(this).attr("aria-courseid"));
+            $("#inputCN").val($(this).data("name"));
+            $("#inputDept").val($(this).data("department"));
+            $("#inputGN").val($(this).attr("aria-groupnumber"));
+            //$("#inputteachID").val($(this).attr("aria-teacher"));
+            $("#inputteachID").val(" ");
+            $("#inputuserID").val($(this).attr("aria-userid"));
+        });
+
+        $("#updateBtn").on("click", function() {
+            var updateData = {};
+            updateData.courseCode = $("#inputCC").val();
+            updateData.courseID = $("#inputCID").val();
+            updateData.courseName = $("#inputCN").val();
+            updateData.department = $("#inputDept").val();
+            updateData.groupNumber = parseInt($("#inputGN").val());
+            updateData.teacherId = parseInt($("#inputteachID").val());
+            updateData.userID = parseInt($("#inputuserID").val());
+            console.log(updateData);
+
+            $.ajax({
+                url: '/updateSched',
+                type: 'GET',
+                contentType: 'application/json; charset-utf-8',
+                dataType: 'json',
+                data: updateData,
+                success: function(data) {
+                    $("#notificationmessage").html("Schedule for '" + data.courseCode + "' has been updated to the database.");
+                },
+                error: function(xhr, exception) {
+                    console.log("Error " + xhr.status + ": " + exception.toString());
+                    console.log("yeehaw");
+                    //button.error();
+                }
+            })
+
         });
 
     });
